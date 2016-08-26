@@ -56,7 +56,7 @@ public class EncryptionDecryptionService {
         return result;
     }
 
-    public String encrypt(char[] plaintext) throws Exception {
+    private String encrypt(char[] plaintext) throws Exception {
         byte[] saltBytes = getSalt().getBytes();
 
         SecretKeyFactory skf = SecretKeyFactory.getInstance("PBKDF2WithHmacSHA1");
@@ -75,7 +75,7 @@ public class EncryptionDecryptionService {
         return DatatypeConverter.printBase64Binary(encryptedTextBytes);
     }
 
-    public String decrypt(char[] encryptedText) throws Exception {
+    private String decrypt(char[] encryptedText) throws Exception {
         byte[] encryptedTextBytes = DatatypeConverter.parseBase64Binary(new String(encryptedText));
         SecretKeySpec secretSpec = new SecretKeySpec(secretKey.getEncoded(), "AES");
 

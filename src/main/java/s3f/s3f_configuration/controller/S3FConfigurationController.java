@@ -13,7 +13,7 @@ import s3f.s3f_configuration.services.S3FConfigurationConstantService;
 import s3f.s3f_configuration.services.S3FConfigurationService;
 
 @RestController
-@RequestMapping("/api/v1/s3f-configuration/")
+@RequestMapping("/api/v1/s3f-configuration")
 public class S3FConfigurationController {
     private static final Logger LOGGER = LoggerFactory.getLogger(S3FConfigurationController.class);
     @Autowired

@@ -17,9 +17,11 @@ public class S3FConfigurationService {
     private S3FConfigurationRepository s3FConfigurationRepository;
     @Autowired
     private S3FConfigurationRootFactory s3FConfigurationRootFactory;
+    @Autowired
+    private EscapeService escapeService;
 
     public void create(S3FConfigurationDto s3FConfigurationDto) {
-        S3FConfiguration s3FConfiguration = new S3FConfiguration(null, s3FConfigurationDto.getKeyValuePairs(), s3FConfigurationDto.getVersion(), s3FConfigurationDto.getLifecycle(), s3FConfigurationDto.getService());
+        S3FConfiguration s3FConfiguration = new S3FConfiguration(null, escapeService.escape(s3FConfigurationDto.getKeyValuePairs()), s3FConfigurationDto.getVersion(), s3FConfigurationDto.getLifecycle(), s3FConfigurationDto.getService());
         s3FConfigurationRepository.save(s3FConfiguration);
     }
 
@@ -32,7 +34,15 @@ public class S3FConfigurationService {
         if (s3FConfigurations.size() == 0) {
             throw new Exception("No S3FConfiguration in DB");
         }
-        return s3FConfigurations.get(s3FConfigurations.size() - 1);
+        final S3FConfiguration s3FConfiguration = s3FConfigurations.get(s3FConfigurations.size() - 1);
+        final S3FConfiguration unescaped = new S3FConfiguration(
+                s3FConfiguration.getId(),
+                escapeService.unescape(s3FConfiguration.getKeyValuePairs()),
+                s3FConfiguration.getVersion(),
+                s3FConfiguration.getLifecycle(),
+                s3FConfiguration.getService()
+        );
+        return unescaped;
     }
 
     public S3FConfigurationRootDto build(S3FConfigurationConstant s3FConfigurationConstant, S3FConfiguration s3FConfiguration) {

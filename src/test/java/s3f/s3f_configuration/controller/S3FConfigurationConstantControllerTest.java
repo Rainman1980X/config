@@ -38,17 +38,20 @@ public class S3FConfigurationConstantControllerTest {
     }
 
     @Test
-    @Ignore
     public void get() throws Exception {
-        final S3FConfigurationConstantDto s3FConfigurationConstantDto = s3FConfigurationConstantDto();
-        when(s3FConfigurationConstantService.read("version", "lifecycle")).thenReturn(mock(S3FConfigurationConstant.class));
+        final S3FConfigurationConstant s3FConfigurationConstant = s3FConfigurationConstant();
+        when(s3FConfigurationConstantService.read("version", "lifecycle")).thenReturn(s3FConfigurationConstant);
         ResponseEntity responseEntity = s3FConfigurationConstantController.get("version", "lifecycle");
 
-        assertThat(responseEntity.getBody(), is(s3FConfigurationConstantDto));
+        assertThat(responseEntity.getBody(), is(s3FConfigurationConstant));
     }
 
     private S3FConfigurationConstantDto s3FConfigurationConstantDto() {
         return new S3FConfigurationConstantDto(keyValuePairs(), "v1", "develop");
+    }
+
+    private S3FConfigurationConstant s3FConfigurationConstant() {
+        return new S3FConfigurationConstant("ID", keyValuePairs(), "v1", "develop");
     }
 
     private Map<String, String> keyValuePairs() {

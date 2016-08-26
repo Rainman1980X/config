@@ -10,6 +10,7 @@ import java.util.Map;
 
 @Component
 public class S3FConfigurationRootFactory {
+
     public S3FConfigurationRootDto build(S3FConfigurationConstant s3FConfigurationConstant, S3FConfiguration s3FConfiguration) {
         Map<String, String> keyValuePairs = new HashMap<>();
         for (Map.Entry<String, String> keyAndValue : s3FConfiguration.getKeyValuePairs().entrySet()) {

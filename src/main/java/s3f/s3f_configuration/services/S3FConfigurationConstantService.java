@@ -15,11 +15,13 @@ public class S3FConfigurationConstantService {
     private S3FConfigurationConstantRepository s3FConfigurationConstantRepository;
     @Autowired
     private EncryptionDecryptionService encryptionDecryptionService;
+    @Autowired
+    private EscapeService escapeService;
 
     public void create(S3FConfigurationConstantDto s3FConfigurationConstantDto) throws Exception {
         Map<String, String> encryptedKeyValuePairs = encryptionDecryptionService.encrypt(s3FConfigurationConstantDto.getKeyValuePairs());
         S3FConfigurationConstant s3FConfigurationConstantEnc = new S3FConfigurationConstant(null,
-                encryptedKeyValuePairs,
+                escapeService.escape(encryptedKeyValuePairs),
                 s3FConfigurationConstantDto.getVersion(),
                 s3FConfigurationConstantDto.getLifecycle());
         s3FConfigurationConstantRepository.save(s3FConfigurationConstantEnc);
@@ -30,7 +32,7 @@ public class S3FConfigurationConstantService {
         Map<String, String> encryptedKeyValuePairs = encryptionDecryptionService.encrypt(s3FConfigurationConstant.getKeyValuePairs());
         S3FConfigurationConstant s3FConfigurationConstantEnc = new S3FConfigurationConstant(
                 s3FConfigurationConstantFromMongo.getId(),
-                encryptedKeyValuePairs,
+                escapeService.escape(encryptedKeyValuePairs),
                 s3FConfigurationConstant.getVersion(),
                 s3FConfigurationConstant.getLifecycle());
         s3FConfigurationConstantRepository.save(s3FConfigurationConstantEnc);
@@ -45,7 +47,7 @@ public class S3FConfigurationConstantService {
         Map<String, String> decryptedKeyValuePairs = encryptionDecryptionService.decrypt(s3FConfigurationConstantFromMongo.getKeyValuePairs());
         return new S3FConfigurationConstant(
                 s3FConfigurationConstantFromMongo.getId(),
-                decryptedKeyValuePairs,
+                escapeService.unescape(decryptedKeyValuePairs),
                 s3FConfigurationConstantFromMongo.getVersion(),
                 s3FConfigurationConstantFromMongo.getLifecycle());
     }
