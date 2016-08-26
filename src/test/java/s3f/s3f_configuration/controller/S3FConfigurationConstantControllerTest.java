@@ -18,6 +18,8 @@ import static org.hamcrest.MatcherAssert.assertThat;
 import static org.mockito.Mockito.*;
 
 public class S3FConfigurationConstantControllerTest {
+    private final String version = "v1";
+    private final String lifecycle = "develop";
     private S3FConfigurationConstantService s3FConfigurationConstantService;
     private S3FConfigurationConstantController s3FConfigurationConstantController;
 
@@ -46,12 +48,20 @@ public class S3FConfigurationConstantControllerTest {
         assertThat(responseEntity.getBody(), is(s3FConfigurationConstant));
     }
 
+    @Test
+    public void put() throws Exception {
+        ResponseEntity responseEntity = s3FConfigurationConstantController.put(s3FConfigurationConstant());
+
+        assertThat(responseEntity.getStatusCode(), is(HttpStatus.OK));
+        verify(s3FConfigurationConstantService).update(s3FConfigurationConstant());
+    }
+
     private S3FConfigurationConstantDto s3FConfigurationConstantDto() {
-        return new S3FConfigurationConstantDto(keyValuePairs(), "v1", "develop");
+        return new S3FConfigurationConstantDto(keyValuePairs(), version, lifecycle);
     }
 
     private S3FConfigurationConstant s3FConfigurationConstant() {
-        return new S3FConfigurationConstant("ID", keyValuePairs(), "v1", "develop");
+        return new S3FConfigurationConstant("ID", keyValuePairs(), version, lifecycle);
     }
 
     private Map<String, String> keyValuePairs() {

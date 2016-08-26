@@ -28,6 +28,7 @@ public class S3FConfigurationConstantServiceTest {
         s3FConfigurationConstantService = new S3FConfigurationConstantService();
         ReflectionTestUtils.setField(s3FConfigurationConstantService, "s3FConfigurationConstantRepository", s3FConfigurationConstantRepository);
         ReflectionTestUtils.setField(s3FConfigurationConstantService, "encryptionDecryptionService", new EncryptionDecryptionService());
+        ReflectionTestUtils.setField(s3FConfigurationConstantService, "escapeService", new EscapeService());
     }
 
     @Test

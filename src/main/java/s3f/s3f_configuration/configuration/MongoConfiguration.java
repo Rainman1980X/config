@@ -9,7 +9,7 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.data.mongodb.core.MongoTemplate;
 
 import static java.util.Collections.singletonList;
-
+@Deprecated
 //@Configuration
 public class MongoConfiguration {
 
