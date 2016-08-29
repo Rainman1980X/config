@@ -6,11 +6,11 @@ public class LifecycleUrlDictionary {
     private final HashMap<String, String> keysWithUrls = new HashMap<>();
 
     public LifecycleUrlDictionary() {
-        keysWithUrls.put("-develop", "dev-s3f");
-        keysWithUrls.put("-production", "www-s3f");
-        keysWithUrls.put("-stage", "stage-s3f");
-        keysWithUrls.put("-test", "test-s3f");
-        keysWithUrls.put("-local", "local-s3f");
+        keysWithUrls.put("develop", "dev-s3f");
+        keysWithUrls.put("production", "www-s3f");
+        keysWithUrls.put("stage", "stage-s3f");
+        keysWithUrls.put("test", "test-s3f");
+        keysWithUrls.put("local", "local-s3f");
     }
 
     public void check(String[] args) {
@@ -19,8 +19,8 @@ public class LifecycleUrlDictionary {
             throw new IllegalArgumentException("args length = 0");
         }
         for (String arg : args) {
-            if (arg.startsWith("--lifecycle")) {
-                lifecycleKey = arg.replaceFirst("--lifecycle", "");
+            if (arg.startsWith("--lifecycle-")) {
+                lifecycleKey = arg.replaceFirst("--lifecycle-", "");
             }
         }
         if (lifecycleKey == null) {
@@ -29,5 +29,16 @@ public class LifecycleUrlDictionary {
         if (!keysWithUrls.containsKey(lifecycleKey)) {
             throw new IllegalArgumentException(lifecycleKey + " is not supported.");
         }
+    }
+
+    public String getKey(String[] args) {
+        String result = "";
+        for (String arg : args) {
+            if (arg.startsWith("--lifecycle-")) {
+                result = arg.replaceFirst("--lifecycle-", "");
+                break;
+            }
+        }
+        return result;
     }
 }

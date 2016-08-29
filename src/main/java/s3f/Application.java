@@ -10,6 +10,9 @@ import s3f.framework.lifecycle.LifecycleUrlDictionary;
 @SpringBootApplication
 public class Application {
     private static String[] args;
+    public static String lifecycle;
+    public final static String serviceName = "sintec.s3f.mi-config";
+    public final static boolean useConfigService = false;
 
     /**
      * lifecycle (i.a. -develop, -test, -stage, -production)
@@ -19,6 +22,7 @@ public class Application {
     public static void main(String[] args) {
         Application.args = args;
         new LifecycleUrlDictionary().check(args);
+        Application.lifecycle = new LifecycleUrlDictionary().getKey(args);
         SpringApplication.run(Application.class, args);
     }
 
