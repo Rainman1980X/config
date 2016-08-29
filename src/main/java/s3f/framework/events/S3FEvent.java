@@ -23,6 +23,10 @@ public class S3FEvent {
         return correlationId;
     }
 
+    public String getAuthorization() {
+        return authorization;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
