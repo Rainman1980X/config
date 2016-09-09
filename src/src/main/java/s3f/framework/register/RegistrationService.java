@@ -9,6 +9,7 @@ import s3f.Application;
 import s3f.framework.amqp.system.publisher.SystemQueuePublisher;
 import s3f.framework.events.S3FEvent;
 import s3f.framework.lifecycle.LifeCycle;
+import s3f.framework.port.ServletConfig;
 
 @Service
 public class RegistrationService {
@@ -16,8 +17,7 @@ public class RegistrationService {
     @Autowired
     private LifeCycle lifeCycle;
 
-    @Value("${server.port}")
-    private String serverPort;
+
     @Value("${s3f.domain}")
     private String domain;
     @Value("${s3f.amqp.system.key}")
@@ -25,16 +25,18 @@ public class RegistrationService {
 
     private final RegisterInfoFactory registerInfoFactory;
     private final SystemQueuePublisher systemQueuePublisher;
+    private final ServletConfig servletConfig;
 
     @Autowired
-    public RegistrationService(RegisterInfoFactory registerInfoFactory, SystemQueuePublisher systemQueuePublisher) {
+    public RegistrationService(RegisterInfoFactory registerInfoFactory, SystemQueuePublisher systemQueuePublisher, ServletConfig servletConfig) {
         this.registerInfoFactory = registerInfoFactory;
         this.systemQueuePublisher = systemQueuePublisher;
+        this.servletConfig = servletConfig;
     }
 
     public void register() throws Exception {
         LOGGER.info("register");
-        RegisterInfo registerInfo = registerInfoFactory.build(Application.serviceName, "Application", serverPort, lifeCycle.getKey());
+        RegisterInfo registerInfo = registerInfoFactory.build(Application.serviceName, "Application", "" + servletConfig.getAvailableTcpPort(), lifeCycle.getKey());
         final S3FEvent s3FEvent = new S3FEvent("", "", domain, "register.service", Application.serviceName, registerInfo);
         LOGGER.info(s3FEvent.toJson());
         systemQueuePublisher.basicPublish(amqpKey, s3FEvent);
@@ -42,7 +44,7 @@ public class RegistrationService {
 
     public void deregister() throws Exception {
         LOGGER.info("deregister");
-        RegisterInfo registerInfo = registerInfoFactory.build(Application.serviceName, "Application", serverPort, lifeCycle.getKey());
+        RegisterInfo registerInfo = registerInfoFactory.build(Application.serviceName, "Application", "" + servletConfig.getAvailableTcpPort(), lifeCycle.getKey());
         final S3FEvent s3FEvent = new S3FEvent("", "", domain, "deregister.service", Application.serviceName, registerInfo);
         LOGGER.info(s3FEvent.toJson());
         systemQueuePublisher.basicPublish(amqpKey, s3FEvent);

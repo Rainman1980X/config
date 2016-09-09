@@ -5,6 +5,7 @@ import org.springframework.test.util.ReflectionTestUtils;
 import s3f.framework.amqp.system.publisher.SystemQueuePublisher;
 import s3f.framework.events.S3FEvent;
 import s3f.framework.lifecycle.LifeCycle;
+import s3f.framework.port.ServletConfig;
 
 import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.eq;
@@ -15,7 +16,7 @@ public class RegistrationServiceTest {
     @Test
     public void register() throws Exception {
         SystemQueuePublisher systemQueuePublisher = mock(SystemQueuePublisher.class);
-        RegistrationService registrationService = new RegistrationService(new RegisterInfoFactory(), systemQueuePublisher);
+        RegistrationService registrationService = new RegistrationService(new RegisterInfoFactory(), systemQueuePublisher, new ServletConfig());
         ReflectionTestUtils.setField(registrationService, "lifeCycle", new LifeCycle("local"));
         ReflectionTestUtils.setField(registrationService, "amqpKey", "E");
 

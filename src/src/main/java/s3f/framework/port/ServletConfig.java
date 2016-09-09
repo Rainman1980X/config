@@ -13,10 +13,17 @@ public class ServletConfig {
     @Value("${s3f.server.port.range.max}")
     private int s3fServerPortRangeMax;
 
+    public int getAvailableTcpPort() {
+        return availableTcpPort;
+    }
+
+    private int availableTcpPort;
+
     @Bean
     public EmbeddedServletContainerCustomizer containerCustomizer() {
         return (container -> {
-            container.setPort(SocketUtils.findAvailableTcpPort(s3fServerPortRangeMin, s3fServerPortRangeMax));
+            availableTcpPort = SocketUtils.findAvailableTcpPort(s3fServerPortRangeMin, s3fServerPortRangeMax);
+            container.setPort(availableTcpPort);
         });
     }
 }
