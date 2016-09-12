@@ -19,7 +19,7 @@ public class ServletConfigTest {
 
     @Test
     public void getAvailableTcpPort(){
-        ReflectionTestUtils.setField(servletConfig, "availableTcpPort", "8085");
+        ReflectionTestUtils.setField(servletConfig, "availableTcpPort", 8085);
 
         assertThat(servletConfig.getAvailableTcpPort(), is(8085));
     }
