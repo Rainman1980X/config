@@ -9,14 +9,13 @@ import s3f.Application;
 import s3f.framework.amqp.system.publisher.SystemQueuePublisher;
 import s3f.framework.events.S3FEvent;
 import s3f.framework.lifecycle.LifeCycle;
-import s3f.framework.port.ServletConfig;
+import s3f.framework.config.ServletConfig;
 
 @Service
 public class RegistrationService {
     private static final Logger LOGGER = LoggerFactory.getLogger(RegistrationService.class);
     @Autowired
     private LifeCycle lifeCycle;
-
 
     @Value("${s3f.domain}")
     private String domain;

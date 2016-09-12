@@ -5,7 +5,7 @@ import org.springframework.test.util.ReflectionTestUtils;
 import s3f.framework.amqp.system.publisher.SystemQueuePublisher;
 import s3f.framework.events.S3FEvent;
 import s3f.framework.lifecycle.LifeCycle;
-import s3f.framework.port.ServletConfig;
+import s3f.framework.config.ServletConfig;
 
 import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.eq;

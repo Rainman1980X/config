@@ -1,4 +1,4 @@
-package s3f.framework.port;
+package s3f.framework.config;
 
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.context.embedded.EmbeddedServletContainerCustomizer;
@@ -13,11 +13,11 @@ public class ServletConfig {
     @Value("${s3f.server.port.range.max}")
     private int s3fServerPortRangeMax;
 
+    private int availableTcpPort;
+
     public int getAvailableTcpPort() {
         return availableTcpPort;
     }
-
-    private int availableTcpPort;
 
     @Bean
     public EmbeddedServletContainerCustomizer containerCustomizer() {
