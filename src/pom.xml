@@ -7,7 +7,7 @@
   <version>1.0-SNAPSHOT</version>
   <packaging>jar</packaging>
  
-  <name>s3f-configuration</name>
+  <name>sintec.s3f.mi-config</name>
   <url>http://www.sintec.de</url>
  
  <parent>
