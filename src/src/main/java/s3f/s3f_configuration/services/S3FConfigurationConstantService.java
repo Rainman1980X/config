@@ -7,6 +7,7 @@ import s3f.s3f_configuration.repositories.S3FConfigurationConstantRepository;
 
 import java.util.List;
 
+//Todo Klärung weshalb nicht mehr escaped werden muss
 @Service
 public class S3FConfigurationConstantService {
     @Autowired

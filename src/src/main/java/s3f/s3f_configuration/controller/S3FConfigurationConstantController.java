@@ -12,7 +12,7 @@ import org.springframework.web.bind.annotation.*;
 import s3f.s3f_configuration.dto.S3FConfigurationConstantDto;
 import s3f.s3f_configuration.services.S3FConfigurationConstantService;
 import sun.net.www.protocol.http.HttpURLConnection;
-
+//Todo PUT/POST falsch im LOG
 @RestController
 @RequestMapping("/api/v1/s3f-configuration/constant")
 public class S3FConfigurationConstantController {

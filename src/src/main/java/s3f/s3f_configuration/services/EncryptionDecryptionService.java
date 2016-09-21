@@ -6,7 +6,7 @@ import org.springframework.stereotype.Service;
 import javax.crypto.Cipher;
 import javax.crypto.spec.IvParameterSpec;
 import javax.crypto.spec.SecretKeySpec;
-
+//Todo Statische Methoden durch Instanzmethoden ersetzen
 @Service
 public class EncryptionDecryptionService {
 
