@@ -4,13 +4,10 @@ import org.junit.Before;
 import org.junit.Test;
 import org.springframework.test.util.ReflectionTestUtils;
 import s3f.s3f_configuration.dto.S3FConfigurationConstantDto;
-import s3f.s3f_configuration.entities.S3FConfigurationConstant;
 import s3f.s3f_configuration.repositories.S3FConfigurationConstantRepository;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.MatcherAssert.assertThat;
@@ -33,51 +30,25 @@ public class S3FConfigurationConstantServiceTest {
 
     @Test
     public void create() throws Exception {
-        Map<String, String> keyValuePairs = new HashMap<>();
-        keyValuePairs.put("encLogin", "$encLogin");
-        final S3FConfigurationConstantDto s3FConfigurationConstantDto = new S3FConfigurationConstantDto(keyValuePairs, version, lifecycle);
-        final S3FConfigurationConstant s3FConfigurationConstant = new S3FConfigurationConstant(null, keyValuePairs, version, lifecycle);
+        final S3FConfigurationConstantDto s3FConfigurationConstantDto = new S3FConfigurationConstantDto(version, lifecycle,"encLogin", "$encLogin");
+        final S3FConfigurationConstantDto s3FConfigurationConstantDtoEncrypt = new S3FConfigurationConstantDto(version, lifecycle,"encLogin", "ZKEuInxN6kZS6IR3IlOBfg==");
 
         s3FConfigurationConstantService.create(s3FConfigurationConstantDto);
 
-        verify(s3FConfigurationConstantRepository).save(s3FConfigurationConstant);
+        verify(s3FConfigurationConstantRepository).save(s3FConfigurationConstantDtoEncrypt);
     }
 
     @Test
     public void update() throws Exception {
-        Map<String, String> keyValuePairs = new HashMap<>();
-        keyValuePairs.put("encLogin", "$encLogin");
-
-        S3FConfigurationConstant s3FConfigurationConstantFromRequest = new S3FConfigurationConstant(null, keyValuePairs, version, lifecycle);
-        S3FConfigurationConstant existingInDB = new S3FConfigurationConstant("id1", new HashMap<>(), version, lifecycle);
-        List<S3FConfigurationConstant> s3FConfigurationConstantListFromDB = new ArrayList<>();
+        S3FConfigurationConstantDto s3FConfigurationConstantFromRequest = new S3FConfigurationConstantDto(version, lifecycle,"encLogin", "$encLogin");
+        S3FConfigurationConstantDto existingInDB = new S3FConfigurationConstantDto(version, lifecycle,"encLogin","$encLogin");
+        List<S3FConfigurationConstantDto> s3FConfigurationConstantListFromDB = new ArrayList<>();
         s3FConfigurationConstantListFromDB.add(existingInDB);
-        when(s3FConfigurationConstantRepository.findByVersionLikeAndLifecycleLikeOrderByIdDesc(version, lifecycle)).thenReturn(s3FConfigurationConstantListFromDB);
+        when(s3FConfigurationConstantRepository.findByVersionAndLifecycleAndConstantName(version, lifecycle,"encLogin")).thenReturn(s3FConfigurationConstantListFromDB);
 
         s3FConfigurationConstantService.update(s3FConfigurationConstantFromRequest);
-        S3FConfigurationConstant expectedUpdated = new S3FConfigurationConstant("id1", keyValuePairs, version, lifecycle);
+        S3FConfigurationConstantDto expectedUpdated = new S3FConfigurationConstantDto(version, lifecycle,"encLogin", "ZKEuInxN6kZS6IR3IlOBfg==");
 
         verify(s3FConfigurationConstantRepository).save(expectedUpdated);
-    }
-
-    @Test
-    public void read() throws Exception {
-        final List<S3FConfigurationConstant> s3FConfigurationConstants = new ArrayList<>();
-        final HashMap<String, String> keyValuePairs = new HashMap<>();
-        keyValuePairs.put("nothingToEncrypt", "value");
-        final S3FConfigurationConstant s3FConfigurationConstant = new S3FConfigurationConstant("1", keyValuePairs, version, lifecycle);
-        s3FConfigurationConstants.add(s3FConfigurationConstant);
-        when(s3FConfigurationConstantRepository.findByVersionLikeAndLifecycleLike(version, lifecycle)).thenReturn(s3FConfigurationConstants);
-
-        final S3FConfigurationConstant actual = s3FConfigurationConstantService.read(version, lifecycle);
-
-        assertThat(actual, is(s3FConfigurationConstant));
-    }
-
-    @Test
-    public void readAll() {
-        s3FConfigurationConstantService.readAll(version, lifecycle);
-
-        verify(s3FConfigurationConstantRepository).findByVersionLikeAndLifecycleLikeOrderByIdDesc(version, lifecycle);
     }
 }

@@ -2,10 +2,10 @@ package s3f.s3f_configuration.services;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import s3f.s3f_configuration.dto.S3FConfigurationConstantDto;
 import s3f.s3f_configuration.dto.S3FConfigurationDto;
 import s3f.s3f_configuration.dto.S3FConfigurationRootDto;
 import s3f.s3f_configuration.entities.S3FConfiguration;
-import s3f.s3f_configuration.entities.S3FConfigurationConstant;
 import s3f.s3f_configuration.factories.S3FConfigurationRootFactory;
 import s3f.s3f_configuration.repositories.S3FConfigurationRepository;
 
@@ -45,7 +45,7 @@ public class S3FConfigurationService {
         return unescaped;
     }
 
-    public S3FConfigurationRootDto build(S3FConfigurationConstant s3FConfigurationConstant, S3FConfiguration s3FConfiguration) {
-        return s3FConfigurationRootFactory.build(s3FConfigurationConstant, s3FConfiguration);
+    public S3FConfigurationRootDto build(List<S3FConfigurationConstantDto> s3FConfigurationConstants, S3FConfiguration s3FConfiguration) {
+        return s3FConfigurationRootFactory.build(s3FConfigurationConstants, s3FConfiguration);
     }
 }

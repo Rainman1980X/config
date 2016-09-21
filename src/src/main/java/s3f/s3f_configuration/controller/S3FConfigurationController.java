@@ -6,11 +6,13 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import s3f.s3f_configuration.dto.S3FConfigurationConstantDto;
 import s3f.s3f_configuration.dto.S3FConfigurationDto;
 import s3f.s3f_configuration.entities.S3FConfiguration;
-import s3f.s3f_configuration.entities.S3FConfigurationConstant;
 import s3f.s3f_configuration.services.S3FConfigurationConstantService;
 import s3f.s3f_configuration.services.S3FConfigurationService;
+
+import java.util.List;
 
 @RestController
 @RequestMapping("/api/v1/s3f-configuration")
@@ -35,11 +37,13 @@ public class S3FConfigurationController {
     }
 
     @RequestMapping(value = "/{service}/{version}/{lifecycle}", method = RequestMethod.GET)
-    public ResponseEntity getRoot(@PathVariable String service, @PathVariable String version, @PathVariable String lifecycle) {
+    public ResponseEntity getRoot(@PathVariable String service,
+                                  @PathVariable String version,
+                                  @PathVariable String lifecycle) {
         LOGGER.info("GET (single S3FConfiguration) " + service + " " + version + " " + lifecycle);
         ResponseEntity responseEntity;
         try {
-            final S3FConfigurationConstant s3FConfigurationConstants = s3FConfigurationConstantService.read(version, lifecycle);
+            final List<S3FConfigurationConstantDto> s3FConfigurationConstants = s3FConfigurationConstantService.readAll(version, lifecycle);
             final S3FConfiguration s3FConfiguration = s3FConfigurationService.read(service, version, lifecycle);
             responseEntity = new ResponseEntity(s3FConfigurationService.build(s3FConfigurationConstants, s3FConfiguration), HttpStatus.OK);
         } catch (Exception e) {

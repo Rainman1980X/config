@@ -1,11 +1,13 @@
 package s3f.s3f_configuration.factories;
 
 import org.junit.Test;
-import s3f.s3f_configuration.entities.S3FConfiguration;
-import s3f.s3f_configuration.entities.S3FConfigurationConstant;
+import s3f.s3f_configuration.dto.S3FConfigurationConstantDto;
 import s3f.s3f_configuration.dto.S3FConfigurationRootDto;
+import s3f.s3f_configuration.entities.S3FConfiguration;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import static org.hamcrest.CoreMatchers.is;
@@ -22,11 +24,9 @@ public class S3FConfigurationRootDtoFactoryTest {
         keyValuePairsOfS3FConfiguration.put("waitOnRetry", "4");
         keyValuePairsOfS3FConfiguration.put("mongoPassword", "@[mongoPassword]");
         S3FConfiguration s3FConfiguration = new S3FConfiguration("1", keyValuePairsOfS3FConfiguration, version, lifecycle, serviceName);
-        final Map<String, String> keyValuePairsOfS3FConfigurationConstant = new HashMap<>();
-        keyValuePairsOfS3FConfigurationConstant.put("@[mongoPassword]", "topsecret");
-        S3FConfigurationConstant s3FConfigurationConstant = new S3FConfigurationConstant("111", keyValuePairsOfS3FConfigurationConstant, version, lifecycle);
-
-        S3FConfigurationRootDto s3FConfigurationRootDto = new S3FConfigurationRootFactory().build(s3FConfigurationConstant, s3FConfiguration);
+        List<S3FConfigurationConstantDto> s3FConfigurationConstantDtos = new ArrayList<>();
+        s3FConfigurationConstantDtos.add(new S3FConfigurationConstantDto(version, lifecycle,"@[mongoPassword]", "ZKEuInxN6kZS6IR3IlOBfg=="));
+        S3FConfigurationRootDto s3FConfigurationRootDto = new S3FConfigurationRootFactory().build(s3FConfigurationConstantDtos, s3FConfiguration);
 
         assertThat(s3FConfigurationRootDto, is(expected()));
     }
@@ -34,7 +34,7 @@ public class S3FConfigurationRootDtoFactoryTest {
     private S3FConfigurationRootDto expected() {
         final Map<String, String> keyValuePairs = new HashMap<>();
         keyValuePairs.put("waitOnRetry", "4");
-        keyValuePairs.put("mongoPassword", "topsecret");
+        keyValuePairs.put("mongoPassword", "$encLogin");
 
         return new S3FConfigurationRootDto(keyValuePairs, version, lifecycle, serviceName);
     }

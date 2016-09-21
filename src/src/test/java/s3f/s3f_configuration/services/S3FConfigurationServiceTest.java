@@ -3,10 +3,9 @@ package s3f.s3f_configuration.services;
 import org.junit.Before;
 import org.junit.Test;
 import org.springframework.test.util.ReflectionTestUtils;
+import s3f.s3f_configuration.dto.S3FConfigurationConstantDto;
 import s3f.s3f_configuration.dto.S3FConfigurationDto;
-import s3f.s3f_configuration.dto.S3FConfigurationRootDto;
 import s3f.s3f_configuration.entities.S3FConfiguration;
-import s3f.s3f_configuration.entities.S3FConfigurationConstant;
 import s3f.s3f_configuration.factories.S3FConfigurationRootFactory;
 import s3f.s3f_configuration.repositories.S3FConfigurationRepository;
 
@@ -75,10 +74,10 @@ public class S3FConfigurationServiceTest {
     @Test
     public void build() {
         S3FConfiguration s3FConfiguration = new S3FConfiguration("1", new HashMap<>(), version, lifecycle, version);
-        S3FConfigurationConstant s3FConfigurationConstant = new S3FConfigurationConstant("1", new HashMap<>(), version, lifecycle);
+        List<S3FConfigurationConstantDto> s3FConfigurationConstantDtos = new ArrayList<>();
+        s3FConfigurationConstantDtos.add(new S3FConfigurationConstantDto(version, lifecycle,"",""));
+        s3FConfigurationService.build(s3FConfigurationConstantDtos, s3FConfiguration);
 
-        s3FConfigurationService.build(s3FConfigurationConstant, s3FConfiguration);
-
-        verify(s3FConfigurationRootFactory).build(s3FConfigurationConstant, s3FConfiguration);
+        verify(s3FConfigurationRootFactory).build(s3FConfigurationConstantDtos, s3FConfiguration);
     }
 }

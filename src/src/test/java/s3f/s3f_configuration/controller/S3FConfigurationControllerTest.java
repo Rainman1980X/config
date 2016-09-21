@@ -38,7 +38,7 @@ public class S3FConfigurationControllerTest {
         ResponseEntity responseEntity = s3FConfigurationController.getRoot(service, version, lifecycle);
 
         assertThat(responseEntity.getStatusCode(), is(HttpStatus.OK));
-        verify(s3FConfigurationConstantService).read(version, lifecycle);
+        verify(s3FConfigurationConstantService).readAll(version, lifecycle);
         verify(s3FConfigurationService).read(service, version, lifecycle);
     }
 

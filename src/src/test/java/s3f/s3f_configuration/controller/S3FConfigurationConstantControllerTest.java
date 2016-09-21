@@ -1,17 +1,12 @@
 package s3f.s3f_configuration.controller;
 
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.test.util.ReflectionTestUtils;
 import s3f.s3f_configuration.dto.S3FConfigurationConstantDto;
-import s3f.s3f_configuration.entities.S3FConfigurationConstant;
 import s3f.s3f_configuration.services.S3FConfigurationConstantService;
-
-import java.util.HashMap;
-import java.util.Map;
 
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.MatcherAssert.assertThat;
@@ -41,9 +36,9 @@ public class S3FConfigurationConstantControllerTest {
 
     @Test
     public void get() throws Exception {
-        final S3FConfigurationConstant s3FConfigurationConstant = s3FConfigurationConstant();
-        when(s3FConfigurationConstantService.read("version", "lifecycle")).thenReturn(s3FConfigurationConstant);
-        ResponseEntity responseEntity = s3FConfigurationConstantController.get("version", "lifecycle");
+        final S3FConfigurationConstantDto s3FConfigurationConstant = s3FConfigurationConstant();
+        when(s3FConfigurationConstantService.read("version", "lifecycle","encMongoDBHost")).thenReturn(s3FConfigurationConstant);
+        ResponseEntity responseEntity = s3FConfigurationConstantController.get("version", "lifecycle","encMongoDBHost");
 
         assertThat(responseEntity.getBody(), is(s3FConfigurationConstant));
     }
@@ -57,17 +52,10 @@ public class S3FConfigurationConstantControllerTest {
     }
 
     private S3FConfigurationConstantDto s3FConfigurationConstantDto() {
-        return new S3FConfigurationConstantDto(keyValuePairs(), version, lifecycle);
+        return new S3FConfigurationConstantDto( version, lifecycle,"encMongoDBHost", "$encMongoDBHost");
     }
 
-    private S3FConfigurationConstant s3FConfigurationConstant() {
-        return new S3FConfigurationConstant("ID", keyValuePairs(), version, lifecycle);
+    private S3FConfigurationConstantDto s3FConfigurationConstant() {
+        return new S3FConfigurationConstantDto(version, lifecycle,"encMongoDBHost", "$encMongoDBHost");
     }
-
-    private Map<String, String> keyValuePairs() {
-        Map<String, String> keyValuePairs = new HashMap<>();
-        keyValuePairs.put("encMongoDBHost", "$encMongoDBHost");
-        return keyValuePairs;
-    }
-
 }

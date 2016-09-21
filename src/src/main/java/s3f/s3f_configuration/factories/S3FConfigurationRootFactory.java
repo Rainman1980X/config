@@ -1,25 +1,35 @@
 package s3f.s3f_configuration.factories;
 
 import org.springframework.stereotype.Component;
-import s3f.s3f_configuration.entities.S3FConfiguration;
-import s3f.s3f_configuration.entities.S3FConfigurationConstant;
+import s3f.s3f_configuration.dto.S3FConfigurationConstantDto;
 import s3f.s3f_configuration.dto.S3FConfigurationRootDto;
+import s3f.s3f_configuration.entities.S3FConfiguration;
+import s3f.s3f_configuration.services.EncryptionDecryptionService;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 @Component
 public class S3FConfigurationRootFactory {
 
-    public S3FConfigurationRootDto build(S3FConfigurationConstant s3FConfigurationConstant, S3FConfiguration s3FConfiguration) {
-        Map<String, String> keyValuePairs = new HashMap<>();
+    public S3FConfigurationRootDto build(List<S3FConfigurationConstantDto> s3FConfigurationConstantDtos, S3FConfiguration s3FConfiguration) {
+
+        Map<String, String> s3FConstantsMap = s3FConfigurationConstantDtos.stream()
+                .collect(Collectors.toMap(
+                        s3FConfigurationConstantDto -> s3FConfigurationConstantDto.getConstantName(),
+                        s3FConfigurationConstantDto -> EncryptionDecryptionService.decrypt(s3FConfigurationConstantDto.getConstantValue())));
+
+        Map<String, String> mergedKeyValuePairs = new HashMap<>();
+
         for (Map.Entry<String, String> keyAndValue : s3FConfiguration.getKeyValuePairs().entrySet()) {
-            if (s3FConfigurationConstant.getKeyValuePairs().containsKey(keyAndValue.getValue())) {
-                keyValuePairs.put(keyAndValue.getKey(), s3FConfigurationConstant.getKeyValuePairs().get(keyAndValue.getValue()));
+            if (s3FConstantsMap.containsKey(keyAndValue.getValue())) {
+                mergedKeyValuePairs.put(keyAndValue.getKey(), s3FConstantsMap.get(keyAndValue.getValue()));
             } else {
-                keyValuePairs.put(keyAndValue.getKey(), keyAndValue.getValue());
+                mergedKeyValuePairs.put(keyAndValue.getKey(), keyAndValue.getValue());
             }
         }
-        return new S3FConfigurationRootDto(keyValuePairs, s3FConfiguration.getVersion(), s3FConfiguration.getLifecycle(), s3FConfiguration.getService());
+        return new S3FConfigurationRootDto(mergedKeyValuePairs, s3FConfiguration.getVersion(), s3FConfiguration.getLifecycle(), s3FConfiguration.getService());
     }
 }

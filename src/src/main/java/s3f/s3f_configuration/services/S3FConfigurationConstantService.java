@@ -3,11 +3,9 @@ package s3f.s3f_configuration.services;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import s3f.s3f_configuration.dto.S3FConfigurationConstantDto;
-import s3f.s3f_configuration.entities.S3FConfigurationConstant;
 import s3f.s3f_configuration.repositories.S3FConfigurationConstantRepository;
 
 import java.util.List;
-import java.util.Map;
 
 @Service
 public class S3FConfigurationConstantService {
@@ -19,40 +17,63 @@ public class S3FConfigurationConstantService {
     private EscapeService escapeService;
 
     public void create(S3FConfigurationConstantDto s3FConfigurationConstantDto) throws Exception {
-        Map<String, String> encryptedKeyValuePairs = encryptionDecryptionService.encrypt(s3FConfigurationConstantDto.getKeyValuePairs());
-        S3FConfigurationConstant s3FConfigurationConstantEnc = new S3FConfigurationConstant(null,
-                escapeService.escape(encryptedKeyValuePairs),
+
+        String constantValue = encryptionDecryptionService.encrypt(s3FConfigurationConstantDto.getConstantValue());
+
+        S3FConfigurationConstantDto s3FConfigurationConstantEnc = new S3FConfigurationConstantDto(
                 s3FConfigurationConstantDto.getVersion(),
-                s3FConfigurationConstantDto.getLifecycle());
+                s3FConfigurationConstantDto.getLifecycle(),
+                s3FConfigurationConstantDto.getConstantName(),
+                constantValue);
         s3FConfigurationConstantRepository.save(s3FConfigurationConstantEnc);
     }
 
-    public void update(S3FConfigurationConstant s3FConfigurationConstant) throws Exception {
-        S3FConfigurationConstant s3FConfigurationConstantFromMongo = s3FConfigurationConstantRepository.findByVersionLikeAndLifecycleLikeOrderByIdDesc(s3FConfigurationConstant.getVersion(), s3FConfigurationConstant.getLifecycle()).get(0);
-        Map<String, String> encryptedKeyValuePairs = encryptionDecryptionService.encrypt(s3FConfigurationConstant.getKeyValuePairs());
-        S3FConfigurationConstant s3FConfigurationConstantEnc = new S3FConfigurationConstant(
-                s3FConfigurationConstantFromMongo.getId(),
-                escapeService.escape(encryptedKeyValuePairs),
-                s3FConfigurationConstant.getVersion(),
-                s3FConfigurationConstant.getLifecycle());
-        s3FConfigurationConstantRepository.save(s3FConfigurationConstantEnc);
-    }
-
-    public S3FConfigurationConstant read(String version, String lifecycle) throws Exception {
-        final List<S3FConfigurationConstant> s3FConfigurationConstants = s3FConfigurationConstantRepository.findByVersionLikeAndLifecycleLike(version, lifecycle);
-        if (s3FConfigurationConstants.size() == 0) {
-            throw new Exception("No S3FConfigurationConstant in DB");
+    public void update(S3FConfigurationConstantDto s3FConfigurationConstantDto) throws Exception {
+        final List<S3FConfigurationConstantDto> s3FConfigurationConstantDtos =
+                s3FConfigurationConstantRepository.findByVersionAndLifecycleAndConstantName(
+                s3FConfigurationConstantDto.getVersion(),
+                s3FConfigurationConstantDto.getLifecycle(),
+                s3FConfigurationConstantDto.getConstantName());
+        if(s3FConfigurationConstantDtos.isEmpty()){
+            throw new Exception("No Configurations constant found");
         }
-        final S3FConfigurationConstant s3FConfigurationConstantFromMongo = s3FConfigurationConstants.get(s3FConfigurationConstants.size() - 1);
-        Map<String, String> decryptedKeyValuePairs = encryptionDecryptionService.decrypt(s3FConfigurationConstantFromMongo.getKeyValuePairs());
-        return new S3FConfigurationConstant(
-                s3FConfigurationConstantFromMongo.getId(),
-                escapeService.unescape(decryptedKeyValuePairs),
-                s3FConfigurationConstantFromMongo.getVersion(),
-                s3FConfigurationConstantFromMongo.getLifecycle());
+        S3FConfigurationConstantDto s3FConfigurationConstantDtoTemp;
+        if(s3FConfigurationConstantDtos.size() >1){
+            throw new Exception("Duplicate entry found for "+s3FConfigurationConstantDtos.get(0).getConstantName());
+        }
+
+        s3FConfigurationConstantDtoTemp = s3FConfigurationConstantDtos.get(0);
+
+        String constantValue = encryptionDecryptionService.encrypt(s3FConfigurationConstantDto.getConstantValue());
+
+        S3FConfigurationConstantDto s3FConfigurationConstantEnc = new S3FConfigurationConstantDto(
+                s3FConfigurationConstantDtoTemp.getId(),
+                s3FConfigurationConstantDtoTemp.getVersion(),
+                s3FConfigurationConstantDtoTemp.getLifecycle(),
+                s3FConfigurationConstantDtoTemp.getConstantName(),
+                constantValue);
+        s3FConfigurationConstantRepository.save(s3FConfigurationConstantEnc);
     }
 
-    public List<S3FConfigurationConstant> readAll(String version, String lifecycle) {
-        return s3FConfigurationConstantRepository.findByVersionLikeAndLifecycleLikeOrderByIdDesc(version, lifecycle);
+    public S3FConfigurationConstantDto read(String version, String lifecycle,String constantName) throws Exception {
+        final List<S3FConfigurationConstantDto> s3FConfigurationConstantDtos = s3FConfigurationConstantRepository.findByVersionAndLifecycleAndConstantName(version, lifecycle,constantName);
+        if(s3FConfigurationConstantDtos.isEmpty()){
+            throw new Exception("No Configurations constant found");
+        }
+        S3FConfigurationConstantDto s3FConfigurationConstantDto;
+        if(s3FConfigurationConstantDtos.size() >1){
+            throw new Exception("Duplicate entry found for "+s3FConfigurationConstantDtos.get(0).getConstantName());
+        }
+        s3FConfigurationConstantDto = s3FConfigurationConstantDtos.get(0);
+        String constantValuePlain = encryptionDecryptionService.decrypt(s3FConfigurationConstantDto.getConstantValue());
+        return new S3FConfigurationConstantDto(
+                s3FConfigurationConstantDto.getVersion(),
+                s3FConfigurationConstantDto.getLifecycle(),
+                s3FConfigurationConstantDto.getConstantName(),
+                constantValuePlain);
+    }
+
+    public List<S3FConfigurationConstantDto> readAll(String version, String lifecycle) {
+        return s3FConfigurationConstantRepository.findByVersionAndLifecycle(version, lifecycle);
     }
 }
