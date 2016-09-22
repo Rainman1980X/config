@@ -95,4 +95,24 @@ public class S3FConfigurationConstantController {
         }
         return responseEntity;
     }
+
+    @RequestMapping(value = "/api/v1/s3f-configuration/constant/{version}/{lifecycle}/{constantName}", method = RequestMethod.DELETE)
+    @ApiOperation(value = "Removes a constant", produces = "application/json", consumes = "application/json")
+    @ApiResponses(value = {
+            @ApiResponse(code = HttpURLConnection.HTTP_OK, message = "Configuration constant removed.", response = HttpStatus.class),
+            @ApiResponse(code = HttpURLConnection.HTTP_INTERNAL_ERROR, message = "Configuration constant can't be removed.", response = HttpStatus.class)
+    })
+    public ResponseEntity delete(@PathVariable String version,
+                                 @PathVariable String lifecycle,
+                                 @PathVariable String constantName) {
+
+        LOGGER.info("Delete  " + version + " " + lifecycle+ " " + constantName + " from the list");
+        try {
+            s3FConfigurationConstantService.remove(version, lifecycle,constantName);
+            return new ResponseEntity(HttpStatus.OK);
+        } catch (Exception e) {
+            LOGGER.error("", e);
+            return new ResponseEntity(e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
 }
