@@ -22,7 +22,7 @@ public class ServletConfig {
     @Bean
     public EmbeddedServletContainerCustomizer containerCustomizer() {
         return (container -> {
-            availableTcpPort = SocketUtils.findAvailableTcpPort(s3fServerPortRangeMin, s3fServerPortRangeMax);
+            availableTcpPort = 30000;//SocketUtils.findAvailableTcpPort(s3fServerPortRangeMin, s3fServerPortRangeMax);
             container.setPort(availableTcpPort);
         });
     }
