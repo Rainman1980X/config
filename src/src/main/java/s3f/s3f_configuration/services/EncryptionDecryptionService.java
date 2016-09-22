@@ -1,6 +1,7 @@
 package s3f.s3f_configuration.services;
 
 import org.apache.commons.codec.binary.Base64;
+import org.apache.commons.lang.StringEscapeUtils;
 import org.springframework.stereotype.Service;
 
 import javax.crypto.Cipher;
@@ -22,8 +23,8 @@ public class EncryptionDecryptionService {
             cipher.init(Cipher.ENCRYPT_MODE, skeySpec, iv);
 
             byte[] encrypted = cipher.doFinal(value.getBytes());
-
-            return Base64.encodeBase64String(encrypted);
+            String results = StringEscapeUtils.escapeJava(Base64.encodeBase64String(encrypted));
+            return results;
         } catch (Exception ex) {
             ex.printStackTrace();
         }
@@ -40,7 +41,7 @@ public class EncryptionDecryptionService {
             cipher.init(Cipher.DECRYPT_MODE, skeySpec, iv);
 
             byte[] original = cipher.doFinal(Base64.decodeBase64(encrypted));
-
+            String results = StringEscapeUtils.unescapeJava(new String(original));
             return new String(original);
         } catch (Exception ex) {
             ex.printStackTrace();
