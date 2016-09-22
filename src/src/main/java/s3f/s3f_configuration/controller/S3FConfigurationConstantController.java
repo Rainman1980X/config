@@ -1,8 +1,6 @@
 package s3f.s3f_configuration.controller;
 
-import io.swagger.annotations.ApiOperation;
-import io.swagger.annotations.ApiResponse;
-import io.swagger.annotations.ApiResponses;
+import io.swagger.annotations.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -14,7 +12,8 @@ import s3f.s3f_configuration.services.S3FConfigurationConstantService;
 import sun.net.www.protocol.http.HttpURLConnection;
 //Todo PUT/POST falsch im LOG
 @RestController
-@RequestMapping("/api/v1/s3f-configuration/constant")
+@Api(tags = "Shared Constants", value = "Shared Constants", description = "Simplify configuration")
+
 public class S3FConfigurationConstantController {
     private static final Logger LOGGER = LoggerFactory.getLogger(S3FConfigurationConstantController.class);
     @Autowired
@@ -26,7 +25,7 @@ public class S3FConfigurationConstantController {
             @ApiResponse(code = HttpURLConnection.HTTP_OK, message = "Configuration constant successful created", response = HttpStatus.class),
             @ApiResponse(code = HttpURLConnection.HTTP_INTERNAL_ERROR, message = "Configuration constant can't be saved.", response = HttpStatus.class)
     })
-    public ResponseEntity<HttpStatus> post(@RequestBody S3FConfigurationConstantDto s3FConfigurationConstantDto) {
+    public ResponseEntity<HttpStatus> create(@RequestBody S3FConfigurationConstantDto s3FConfigurationConstantDto) {
         LOGGER.info("PUT");
         try {
             LOGGER.info(s3FConfigurationConstantDto.toString());
@@ -39,13 +38,18 @@ public class S3FConfigurationConstantController {
     }
 
     @RequestMapping(value = "/api/v1/s3f-configuration/constant/{constantName}/{version}/{lifecycle}", method = RequestMethod.GET)
-    public ResponseEntity get(@PathVariable String version,
-                              @PathVariable String lifecycle,
-                              @PathVariable String constantName) {
-        LOGGER.info("GET (single S3FConfigurationConstant) " + version + " " + lifecycle);
+    @ApiOperation(value = "Get a configurarion constant", produces = "application/json", consumes = "application/json")
+    @ApiResponses(value = {
+            @ApiResponse(code = HttpURLConnection.HTTP_OK, message = "Configuration constant found.", response = HttpStatus.class),
+            @ApiResponse(code = HttpURLConnection.HTTP_INTERNAL_ERROR, message = "Configuration constant can't be found.", response = HttpStatus.class)
+    })
+    public ResponseEntity read(@PathVariable String version,
+                               @PathVariable String lifecycle,
+                               @PathVariable String constantName) {
+        LOGGER.info("GET (single S3FConfigurationConstant) " + version + " " + lifecycle + " " + constantName);
         ResponseEntity responseEntity;
         try {
-            responseEntity = new ResponseEntity(s3FConfigurationConstantService.read(version, lifecycle,constantName), HttpStatus.OK);
+            responseEntity = new ResponseEntity(s3FConfigurationConstantService.read(version, lifecycle, constantName), HttpStatus.OK);
         } catch (Exception e) {
             LOGGER.error("", e);
             responseEntity = new ResponseEntity(e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
@@ -53,13 +57,38 @@ public class S3FConfigurationConstantController {
         return responseEntity;
     }
 
-    @RequestMapping(value = "/api/v1/s3f-configuration/constant/{name}/{version}/{lifecycle}", method = RequestMethod.POST)
-    public ResponseEntity put(@RequestBody S3FConfigurationConstantDto s3FConfigurationConstant) {
+    @RequestMapping(value = "/api/v1/s3f-configuration/constant", method = RequestMethod.POST)
+    @ApiOperation(value = "Update a configurarion constant", produces = "application/json", consumes = "application/json")
+    @ApiResponses(value = {
+            @ApiResponse(code = HttpURLConnection.HTTP_OK, message = "Configuration constant found.", response = HttpStatus.class),
+            @ApiResponse(code = HttpURLConnection.HTTP_INTERNAL_ERROR, message = "Configuration constant can't be found.", response = HttpStatus.class)
+    })
+    public ResponseEntity update(@RequestBody S3FConfigurationConstantDto s3FConfigurationConstant) {
         LOGGER.info("POST");
         ResponseEntity responseEntity;
         try {
             s3FConfigurationConstantService.update(s3FConfigurationConstant);
             responseEntity = new ResponseEntity(HttpStatus.OK);
+        } catch (Exception e) {
+            LOGGER.error("", e);
+            responseEntity = new ResponseEntity(e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+        return responseEntity;
+    }
+
+    @RequestMapping(value = "/api/v1/s3f-configuration/constant/{version}/{lifecycle}", method = RequestMethod.GET)
+    @ApiOperation(value = "Get the list of configuration constants", produces = "application/json", consumes = "application/json")
+    @ApiResponses(value = {
+            @ApiResponse(code = HttpURLConnection.HTTP_OK, message = "Configuration constant list found.", response = HttpStatus.class),
+            @ApiResponse(code = HttpURLConnection.HTTP_INTERNAL_ERROR, message = "Configuration constant can't be found.", response = HttpStatus.class)
+    })
+    public ResponseEntity readAll(@PathVariable String version,
+                                  @PathVariable String lifecycle) {
+
+        LOGGER.info("GET (List S3FConfigurationConstant) " + version + " " + lifecycle);
+        ResponseEntity responseEntity;
+        try {
+            responseEntity = new ResponseEntity(s3FConfigurationConstantService.readAll(version, lifecycle), HttpStatus.OK);
         } catch (Exception e) {
             LOGGER.error("", e);
             responseEntity = new ResponseEntity(e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);

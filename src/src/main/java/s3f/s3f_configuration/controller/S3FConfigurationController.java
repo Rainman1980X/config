@@ -1,5 +1,6 @@
 package s3f.s3f_configuration.controller;
 
+import io.swagger.annotations.Api;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,6 +17,7 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/api/v1/s3f-configuration")
+@Api(tags="Application Configurations",value="Shared Constants",description = "Key/Value List for Microservices")
 public class S3FConfigurationController {
     private static final Logger LOGGER = LoggerFactory.getLogger(S3FConfigurationController.class);
     @Autowired

@@ -5,6 +5,7 @@ import org.springframework.stereotype.Service;
 import s3f.s3f_configuration.dto.S3FConfigurationConstantDto;
 import s3f.s3f_configuration.repositories.S3FConfigurationConstantRepository;
 
+import java.util.ArrayList;
 import java.util.List;
 
 //Todo Klärung weshalb nicht mehr escaped werden muss
@@ -66,15 +67,24 @@ public class S3FConfigurationConstantService {
             throw new Exception("Duplicate entry found for "+s3FConfigurationConstantDtos.get(0).getConstantName());
         }
         s3FConfigurationConstantDto = s3FConfigurationConstantDtos.get(0);
-        String constantValuePlain = encryptionDecryptionService.decrypt(s3FConfigurationConstantDto.getConstantValue());
-        return new S3FConfigurationConstantDto(
-                s3FConfigurationConstantDto.getVersion(),
-                s3FConfigurationConstantDto.getLifecycle(),
-                s3FConfigurationConstantDto.getConstantName(),
-                constantValuePlain);
+        return encryptConstantDto(s3FConfigurationConstantDto);
     }
 
     public List<S3FConfigurationConstantDto> readAll(String version, String lifecycle) {
-        return s3FConfigurationConstantRepository.findByVersionAndLifecycle(version, lifecycle);
+        List<S3FConfigurationConstantDto> s3FConfigurationConstantDtos = s3FConfigurationConstantRepository.findByVersionAndLifecycle(version, lifecycle);
+        List<S3FConfigurationConstantDto> s3FConfigurationConstantDtosEncrypt = new ArrayList<>();
+        for(S3FConfigurationConstantDto temp : s3FConfigurationConstantDtos){
+            s3FConfigurationConstantDtosEncrypt.add(encryptConstantDto(temp));
+        }
+        return s3FConfigurationConstantDtosEncrypt;
+    }
+
+    private S3FConfigurationConstantDto encryptConstantDto(S3FConfigurationConstantDto decryptValue){
+        String constantValuePlain = encryptionDecryptionService.decrypt(decryptValue.getConstantValue());
+        return new S3FConfigurationConstantDto(
+                decryptValue.getVersion(),
+                decryptValue.getLifecycle(),
+                decryptValue.getConstantName(),
+                constantValuePlain);
     }
 }

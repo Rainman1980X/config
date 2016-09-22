@@ -28,7 +28,7 @@ public class S3FConfigurationConstantControllerTest {
     @Test
     public void post() throws Exception {
         final S3FConfigurationConstantDto s3FConfigurationConstantDto = s3FConfigurationConstantDto();
-        ResponseEntity responseEntity = s3FConfigurationConstantController.post(s3FConfigurationConstantDto);
+        ResponseEntity responseEntity = s3FConfigurationConstantController.create(s3FConfigurationConstantDto);
 
         assertThat(responseEntity.getStatusCode(), is(HttpStatus.OK));
         verify(s3FConfigurationConstantService).create(s3FConfigurationConstantDto);
@@ -38,14 +38,14 @@ public class S3FConfigurationConstantControllerTest {
     public void get() throws Exception {
         final S3FConfigurationConstantDto s3FConfigurationConstant = s3FConfigurationConstant();
         when(s3FConfigurationConstantService.read("version", "lifecycle","encMongoDBHost")).thenReturn(s3FConfigurationConstant);
-        ResponseEntity responseEntity = s3FConfigurationConstantController.get("version", "lifecycle","encMongoDBHost");
+        ResponseEntity responseEntity = s3FConfigurationConstantController.read("version", "lifecycle","encMongoDBHost");
 
         assertThat(responseEntity.getBody(), is(s3FConfigurationConstant));
     }
 
     @Test
     public void put() throws Exception {
-        ResponseEntity responseEntity = s3FConfigurationConstantController.put(s3FConfigurationConstant());
+        ResponseEntity responseEntity = s3FConfigurationConstantController.update(s3FConfigurationConstant());
 
         assertThat(responseEntity.getStatusCode(), is(HttpStatus.OK));
         verify(s3FConfigurationConstantService).update(s3FConfigurationConstant());
