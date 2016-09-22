@@ -39,9 +39,8 @@ public class EncryptionDecryptionService {
 
             Cipher cipher = Cipher.getInstance("AES/CBC/PKCS5PADDING");
             cipher.init(Cipher.DECRYPT_MODE, skeySpec, iv);
-
-            byte[] original = cipher.doFinal(Base64.decodeBase64(encrypted));
-            String results = StringEscapeUtils.unescapeJava(new String(original));
+            String results = StringEscapeUtils.unescapeJava(encrypted);
+            byte[] original = cipher.doFinal(Base64.decodeBase64(results));
             return new String(original);
         } catch (Exception ex) {
             ex.printStackTrace();
