@@ -51,7 +51,6 @@ public class Application {
             @Override
             public void addCorsMappings(CorsRegistry registry) {
                 registry.addMapping("/api/v1").allowedOrigins("*");
-                registry.addMapping("/api/v1").allowedMethods("*");
                 registry.addMapping("/api/v1").allowedHeaders("*");
 
             }
