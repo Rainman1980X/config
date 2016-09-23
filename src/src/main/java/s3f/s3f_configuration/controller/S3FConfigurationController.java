@@ -20,6 +20,7 @@ import sun.net.www.protocol.http.HttpURLConnection;
 import java.util.List;
 
 @RestController
+@CrossOrigin
 @Api(tags = "Application Configurations", value = "Shared Constants", description = "Key/Value List for Microservices")
 public class S3FConfigurationController {
     private static final Logger LOGGER = LoggerFactory.getLogger(S3FConfigurationController.class);
