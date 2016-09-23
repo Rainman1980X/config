@@ -36,7 +36,7 @@ public class S3FConfigurationServiceTest {
     }
 
     @Test
-    public void create() {
+    public void create() throws Exception{
         Map<String, String> keyValuePairs = new HashMap<>();
         keyValuePairs.put("server.port", "30100");
 

@@ -43,12 +43,12 @@ public class S3FConfigurationControllerTest {
     }
 
     @Test
-    public void post() {
+    public void post() throws Exception {
         final HashMap<String, String> keyValuePairs = new HashMap<>();
         keyValuePairs.put("server.port", "30100");
         final S3FConfigurationDto s3FConfigurationDto = new S3FConfigurationDto(keyValuePairs, version, lifecycle, service);
 
-        ResponseEntity responseEntity = s3FConfigurationController.post(s3FConfigurationDto);
+        ResponseEntity responseEntity = s3FConfigurationController.create(s3FConfigurationDto);
 
         assertThat(responseEntity.getStatusCode(), is(HttpStatus.OK));
         verify(s3FConfigurationService).create(s3FConfigurationDto);

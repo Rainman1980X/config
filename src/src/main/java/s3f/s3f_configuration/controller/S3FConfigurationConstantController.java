@@ -10,10 +10,9 @@ import org.springframework.web.bind.annotation.*;
 import s3f.s3f_configuration.dto.S3FConfigurationConstantDto;
 import s3f.s3f_configuration.services.S3FConfigurationConstantService;
 import sun.net.www.protocol.http.HttpURLConnection;
-//Todo PUT/POST falsch im LOG
+
 @RestController
 @Api(tags = "Shared Constants", value = "Shared Constants", description = "Simplify configuration")
-
 public class S3FConfigurationConstantController {
     private static final Logger LOGGER = LoggerFactory.getLogger(S3FConfigurationConstantController.class);
     @Autowired
