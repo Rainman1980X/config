@@ -15,11 +15,16 @@ import java.util.stream.Collectors;
 public class S3FConfigurationRootFactory {
 
     public S3FConfigurationRootDto build(List<S3FConfigurationConstantDto> s3FConfigurationConstantDtos, S3FConfiguration s3FConfiguration) {
+        Map<String, String> s3FConstantsMap = new HashMap<>();
+        try {
+            s3FConstantsMap = s3FConfigurationConstantDtos.stream()
+                    .collect(Collectors.toMap(
+                            s3FConfigurationConstantDto -> s3FConfigurationConstantDto.getConstantName(),
+                            s3FConfigurationConstantDto -> s3FConfigurationConstantDto.getConstantValue()));
+        } catch (Exception e) {
+            throw e;
+        }
 
-        Map<String, String> s3FConstantsMap = s3FConfigurationConstantDtos.stream()
-                .collect(Collectors.toMap(
-                        s3FConfigurationConstantDto -> s3FConfigurationConstantDto.getConstantName(),
-                        s3FConfigurationConstantDto -> EncryptionDecryptionService.decrypt(s3FConfigurationConstantDto.getConstantValue())));
 
         Map<String, String> mergedKeyValuePairs = new HashMap<>();
 
