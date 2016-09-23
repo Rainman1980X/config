@@ -85,7 +85,9 @@ public class S3FConfigurationService {
     }
 
     public void update(S3FConfiguration s3FConfiguration)throws Exception {
-        final List<S3FConfiguration> s3FConfigurations =readAll(s3FConfiguration.getVersion(),s3FConfiguration.getLifecycle(),s3FConfiguration.getService());
+        final List<S3FConfiguration> s3FConfigurations =readAll(s3FConfiguration.getService(),
+                s3FConfiguration.getVersion(),
+                s3FConfiguration.getLifecycle());
         if(s3FConfigurations.size() != 1){
             throw new Exception("Unexpected count of configurations");
         }
