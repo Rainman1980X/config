@@ -29,73 +29,13 @@ public class S3FConfigurationController {
     @Autowired
     private S3FConfigurationConstantService s3FConfigurationConstantService;
 
-    @RequestMapping(value = "/api/v1/s3f-configuration/variable", method = RequestMethod.PUT)
-    @ApiOperation(value = "Create a new configurarion variable", produces = "application/json", consumes = "application/json", notes = "" +
-            "<h1>Create a new configuration</h1>\n" +
-            "\t<h2>Rest call</h2>\n" +
-            "\t{\n" +
-            "\t<br /> \"keyValuePairs\": {\n" +
-            "\t<br /> },\n" +
-            "\t<br /> \"lifecycle\": \"string\",\n" +
-            "\t<br /> \"service\": \"string\",\n" +
-            "\t<br /> \"version\": \"string\"\n" +
-            "\t<br /> }\n" +
-            "\t<br />\n" +
-            "\t<p>The rest call has got the parameter</p>\n" +
-            "\t<ul>\n" +
-            "\t\t<li>keyValuePairs</li>\n" +
-            "\t\t<li>lifecycle</li>\n" +
-            "\t\t<li>service</li>\n" +
-            "\t\t<li>version</li>\n" +
-            "\t</ul>\n" +
-            "<h2>Description</h2>\n" +
-            "\t<p>The key / value list</p>\n" +
-            "\t<table style=\"border : \"1px solid; border-collapse:collapse;td{border:1px solid;\"}\">\n" +
-            "\t\t<thead>\n" +
-            "\t\t\t<tr>\n" +
-            "\t\t\t\t<td style=\"border : 1px solid;\">key</td>\n" +
-            "\t\t\t\t<td>value</td>\n" +
-            "\t\t\t</tr>\n" +
-            "\t\t</thead>\n" +
-            "\t\t<tbody>\n" +
-            "\t\t\t<tr>\n" +
-            "\t\t\t\t<td>s3f.amqp.system.host</td>\n" +
-            "\t\t\t\t<td>192.168.8.103</td>\n" +
-            "\t\t\t</tr>\n" +
-            "\t\t\t<tr>\n" +
-            "\t\t\t\t<td>s3f.amqp.system.username</td>\n" +
-            "\t\t\t\t<td>s3f</td>\n" +
-            "\t\t\t</tr>\n" +
-            "\t\t\t<tr>\n" +
-            "\t\t\t\t<td>s3f.amqp.system.password</td>\n" +
-            "\t\t\t\t<td>s3f</td>\n" +
-            "\t\t\t</tr>\n" +
-            "\t\t\t<tr>\n" +
-            "\t\t\t\t<td>s3f.amqp.system.port</td>\n" +
-            "\t\t\t\t<td>5672</td>\n" +
-            "\t\t\t</tr>\n" +
-            "\t\t\t<tr>\n" +
-            "\t\t\t\t<td>s3f.amqp.system.virtualHost</td>\n" +
-            "\t\t\t\t<td>s3f-application</td>\n" +
-            "\t\t\t</tr>\n" +
-            "\t\t\t<tr>\n" +
-            "\t\t\t\t<td>s3f.amqp.system.queue</td>\n" +
-            "\t\t\t\t<td>s3f-Systemqueue</td>\n" +
-            "\t\t\t</tr>\n" +
-            "\t\t\t<tr>\n" +
-            "\t\t\t\t<td>s3f.amqp.system.key</td>\n" +
-            "\t\t\t\t<td>E</td>\n" +
-            "\t\t\t</tr>\n" +
-            "\t\t\t<tr>\n" +
-            "\t\t\t\t<td>s3f.amqp.system.type</td>\n" +
-            "\t\t\t\t<td>fanout</td>\n" +
-            "\t\t\t</tr>\n" +
-            "\t\t</tbody>\n" +
-            "\t</table>")
+    @RequestMapping(value = "/s3f-configuration", method = RequestMethod.PUT)
+    @ApiOperation(value = "Create a new configurarion variable", produces = "application/json", consumes = "application/json")
     @ApiResponses(value = {
             @ApiResponse(code = HttpURLConnection.HTTP_OK, message = "Configuration variable successful created", response = HttpStatus.class),
-            @ApiResponse(code = HttpURLConnection.HTTP_INTERNAL_ERROR, message = "Configuration variable can't be saved.", response = HttpStatus.class)
+            @ApiResponse(code = HttpURLConnection.HTTP_INTERNAL_ERROR, message = "Configuration variable can't be saved. May be a duplicate entry. ", response = HttpStatus.class)
     })
+    @CrossOrigin
     public ResponseEntity<?> create(@RequestBody S3FConfigurationDto s3FConfigurationDto) {
         LOGGER.info("Create new Configuration variable");
         try {
@@ -108,8 +48,26 @@ public class S3FConfigurationController {
         }
     }
 
-    @RequestMapping(value = "/api/v1/s3f-configuration/variable/{service}/{version}/{lifecycle}", method = RequestMethod.GET)
-    @ApiOperation(value = "Create configuration with constant replaced", produces = "application/json", consumes = "application/json")
+    @RequestMapping(value = "/s3f-configuration", method = RequestMethod.POST)
+    @ApiOperation(value = "Update a configuration", produces = "application/json", consumes = "application/json")
+    @ApiResponses(value = {
+            @ApiResponse(code = HttpURLConnection.HTTP_OK, message = "Update a configuratione successful created", response = HttpStatus.class),
+            @ApiResponse(code = HttpURLConnection.HTTP_INTERNAL_ERROR, message = "Configuration can't be saved. May be a duplicate entry. ", response = HttpStatus.class)
+    })
+    public ResponseEntity<?> update(@RequestBody S3FConfiguration s3FConfigurationDto) {
+        LOGGER.info("Update Configuration");
+        try {
+            LOGGER.info(s3FConfigurationDto.toString());
+            s3FConfigurationService.update(s3FConfigurationDto);
+            return new ResponseEntity<>(HttpStatus.OK);
+        } catch (Exception e) {
+            LOGGER.error("", e);
+            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
+
+    @RequestMapping(value = "/s3f-configuration/{service}/{version}/{lifecycle}", method = RequestMethod.GET)
+    @ApiOperation(value = "Build configuration with constant replaced", produces = "application/json", consumes = "application/json")
     @ApiResponses(value = {
             @ApiResponse(code = HttpURLConnection.HTTP_OK, message = "Configuration found", response = HttpStatus.class),
             @ApiResponse(code = HttpURLConnection.HTTP_INTERNAL_ERROR, message = "Configuration can't be found.", response = HttpStatus.class)
@@ -128,7 +86,7 @@ public class S3FConfigurationController {
         }
     }
 
-    @RequestMapping(value = "/api/v1/s3f-configuration/variable/{service}/{version}/{lifecycle}/{variableName}", method = RequestMethod.GET)
+    @RequestMapping(value = "/s3f-configuration/{service}/{version}/{lifecycle}/{variableName}", method = RequestMethod.GET)
     @ApiOperation(value = "Get configuration variable", produces = "application/json", consumes = "application/json")
     @ApiResponses(value = {
             @ApiResponse(code = HttpURLConnection.HTTP_OK, message = "Configuration found", response = HttpStatus.class),

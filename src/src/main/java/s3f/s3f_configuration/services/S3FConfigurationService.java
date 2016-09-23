@@ -39,7 +39,7 @@ public class S3FConfigurationService {
     }
 
     public S3FConfiguration read(String service, String version, String lifecycle) throws Exception {
-        final List<S3FConfiguration> s3FConfigurations = s3FConfigurationRepository.findByServiceAndVersionAndLifecycle(service, version, lifecycle);
+        final List<S3FConfiguration> s3FConfigurations = readAll(service, version, lifecycle);
         if (s3FConfigurations.size() == 0) {
             throw new Exception("No S3FConfiguration in DB");
         }
@@ -58,7 +58,7 @@ public class S3FConfigurationService {
      * TODO: This method is to complex. Simplefy the method to get the variable name.
      */
     public S3FConfiguration readOneVariable(String service, String version, String lifecycle, String variableName) throws Exception {
-        final List<S3FConfiguration> s3FConfigurations = s3FConfigurationRepository.findByServiceAndVersionAndLifecycle(service, version, lifecycle);
+        final List<S3FConfiguration> s3FConfigurations =readAll(service, version, lifecycle);
         if (s3FConfigurations.size() <= 0) {
             throw new Exception("No S3FConfiguration in DB");
         }
@@ -82,5 +82,18 @@ public class S3FConfigurationService {
 
     public S3FConfigurationRootDto build(List<S3FConfigurationConstantDto> s3FConfigurationConstants, S3FConfiguration s3FConfiguration) {
         return s3FConfigurationRootFactory.build(s3FConfigurationConstants, s3FConfiguration);
+    }
+
+    public void update(S3FConfiguration s3FConfiguration)throws Exception {
+        final List<S3FConfiguration> s3FConfigurations =readAll(s3FConfiguration.getVersion(),s3FConfiguration.getLifecycle(),s3FConfiguration.getService());
+        if(s3FConfigurations.size() != 1){
+            throw new Exception("Unexpected count of configurations");
+        }
+        S3FConfiguration s3FConfigurationUpdate = new S3FConfiguration(s3FConfiguration.getId(),
+                escapeService.escape(s3FConfiguration.getKeyValuePairs()),
+                s3FConfiguration.getVersion(),
+                s3FConfiguration.getLifecycle(),
+                s3FConfiguration.getService());
+        s3FConfigurationRepository.save(s3FConfigurationUpdate);
     }
 }
