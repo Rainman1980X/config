@@ -52,7 +52,7 @@ public class Application {
             public void addCorsMappings(CorsRegistry registry) {
                 registry.addMapping("/api/v1").allowedOrigins("*");
                 registry.addMapping("/api/v1").allowedMethods("POST,PUT, GET, OPTIONS, DELETE");
-                registry.addMapping("/api/v1").allowedHeaders("*");
+                registry.addMapping("/api/v1").allowedHeaders("Access-Control-Allow-Headers,Origin, X-Requested-With, Content-Type, Accept,AUTH-TOKEN");
 
             }
         };
