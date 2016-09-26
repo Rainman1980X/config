@@ -22,7 +22,7 @@ public class S3FConfigurationService {
 
     public void create(S3FConfigurationDto s3FConfigurationDto) throws Exception {
 
-        if(readAll(s3FConfigurationDto.getVersion(),s3FConfigurationDto.getLifecycle(),s3FConfigurationDto.getService()).size()>0){
+        if (readAll(s3FConfigurationDto.getVersion(), s3FConfigurationDto.getLifecycle(), s3FConfigurationDto.getService()).size() > 0) {
             throw new Exception("Duplicate entry");
         }
         S3FConfiguration s3FConfiguration = new S3FConfiguration(null,
@@ -54,41 +54,25 @@ public class S3FConfigurationService {
         return unescaped;
     }
 
-    /*
-     * TODO: This method is to complex. Simplefy the method to get the variable name.
-     */
-    public S3FConfiguration readOneVariable(String service, String version, String lifecycle, String variableName) throws Exception {
-        final List<S3FConfiguration> s3FConfigurations =readAll(service, version, lifecycle);
+    public void delete(String service, String version, String lifecycle) throws Exception {
+        final List<S3FConfiguration> s3FConfigurations = readAll(service, version, lifecycle);
         if (s3FConfigurations.size() <= 0) {
             throw new Exception("No S3FConfiguration in DB");
         }
-        S3FConfiguration s3FConfigurationVariable = null;
         for (S3FConfiguration itemToFind : s3FConfigurations) {
-            if (escapeService.unescape(itemToFind.getKeyValuePairs()).containsKey(variableName)) {
-                s3FConfigurationVariable = new S3FConfiguration(
-                        itemToFind.getId(),
-                        escapeService.unescape(itemToFind.getKeyValuePairs()),
-                        itemToFind.getVersion(),
-                        itemToFind.getLifecycle(),
-                        itemToFind.getService()
-                );
-            }
+            s3FConfigurationRepository.delete(itemToFind.getId());
         }
-        if (s3FConfigurationVariable == null) {
-            throw new Exception("No S3FConfiguration in DB");
-        }
-        return s3FConfigurationVariable;
     }
 
     public S3FConfigurationRootDto build(List<S3FConfigurationConstantDto> s3FConfigurationConstants, S3FConfiguration s3FConfiguration) {
         return s3FConfigurationRootFactory.build(s3FConfigurationConstants, s3FConfiguration);
     }
 
-    public void update(S3FConfiguration s3FConfiguration)throws Exception {
-        final List<S3FConfiguration> s3FConfigurations =readAll(s3FConfiguration.getService(),
+    public void update(S3FConfiguration s3FConfiguration) throws Exception {
+        final List<S3FConfiguration> s3FConfigurations = readAll(s3FConfiguration.getService(),
                 s3FConfiguration.getVersion(),
                 s3FConfiguration.getLifecycle());
-        if(s3FConfigurations.size() != 1){
+        if (s3FConfigurations.size() != 1) {
             throw new Exception("Unexpected count of configurations");
         }
         S3FConfiguration s3FConfigurationUpdate = new S3FConfiguration(s3FConfiguration.getId(),
