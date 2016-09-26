@@ -85,7 +85,8 @@ public class S3FConfigurationController {
     @RequestMapping(value = "/s3f-configuration/{service}/{version}/{lifecycle}", method = RequestMethod.GET)
     @ApiOperation(value = "Build configuration with constant replaced", produces = "application/json",
             consumes = "application/json",
-    notes = "")
+            notes = "Both configuration constants and the configuration itself will be merged together and will deliver a complete configuration. " +
+            "The configuration depends on the service, version and lifecyle.")
     @ApiResponses(value = {
             @ApiResponse(code = HttpURLConnection.HTTP_OK, message = "Configuration found", response = HttpStatus.class),
             @ApiResponse(code = HttpURLConnection.HTTP_INTERNAL_ERROR, message = "Configuration can't be found.", response = HttpStatus.class)
@@ -109,14 +110,19 @@ public class S3FConfigurationController {
     }
 
     @RequestMapping(value = "/s3f-configuration/{service}/{version}/{lifecycle}/{variableName}", method = RequestMethod.DELETE)
-    @ApiOperation(value = "Delete a configuration", produces = "application/json", consumes = "application/json")
+    @ApiOperation(value = "Delete a configuration", produces = "application/json", consumes = "application/json",
+            notes = "If a configuration will be deleted than the configuration will be deleted physically.")
     @ApiResponses(value = {
             @ApiResponse(code = HttpURLConnection.HTTP_OK, message = "Configuration successfully deleted", response = HttpStatus.class),
             @ApiResponse(code = HttpURLConnection.HTTP_INTERNAL_ERROR, message = "Configuration can't be found.", response = HttpStatus.class)
     })
-    public ResponseEntity getConfigurationVariable(@PathVariable String service,
-                                                   @PathVariable String version,
-                                                   @PathVariable String lifecycle) {
+    public ResponseEntity getConfigurationVariable(
+            @ApiParam(value = "The service parameter is sent from the gui. " +
+            "The service is needed to identify the data record.", required = true) @PathVariable String service,
+            @ApiParam(value = "The version parameter is sent from the gui. " +
+            "The version is needed to identify the data record.", required = true) @PathVariable String version,
+            @ApiParam(value = "The lifecycle parameter is sent from the gui. " +
+            "The lifecycle is needed to identify the data record.", required = true) @PathVariable String lifecycle) {
         LOGGER.info("DELETE a S3FConfiguration) " + service + " " + version + " " + lifecycle);
         try {
             s3FConfigurationService.delete(service, version, lifecycle);
