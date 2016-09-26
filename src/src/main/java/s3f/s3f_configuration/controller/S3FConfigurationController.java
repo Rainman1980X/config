@@ -116,7 +116,7 @@ public class S3FConfigurationController {
             @ApiResponse(code = HttpURLConnection.HTTP_OK, message = "Configuration successfully deleted", response = HttpStatus.class),
             @ApiResponse(code = HttpURLConnection.HTTP_INTERNAL_ERROR, message = "Configuration can't be found.", response = HttpStatus.class)
     })
-    public ResponseEntity getConfigurationVariable(
+    public ResponseEntity deleteConfiguration(
             @ApiParam(value = "The service parameter is sent from the gui. " +
             "The service is needed to identify the data record.", required = true) @PathVariable String service,
             @ApiParam(value = "The version parameter is sent from the gui. " +
