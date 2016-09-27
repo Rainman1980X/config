@@ -3,3 +3,4 @@
 target
 s3f-configuration.iml
 *.log
+/src/*.iml

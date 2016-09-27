@@ -72,6 +72,11 @@
             <version>2.3</version>
         </dependency>
 
+        <dependency>
+            <groupId>sintec.s3f</groupId>
+            <artifactId>sintec.s3f.lib-shared</artifactId>
+            <version>1.0</version>
+        </dependency>
 
     </dependencies>
 
