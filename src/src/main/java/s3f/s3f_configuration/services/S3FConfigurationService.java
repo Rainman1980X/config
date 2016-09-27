@@ -9,6 +9,7 @@ import s3f.s3f_configuration.entities.S3FConfiguration;
 import s3f.s3f_configuration.factories.S3FConfigurationRootFactory;
 import s3f.s3f_configuration.repositories.S3FConfigurationRepository;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Service
@@ -36,6 +37,10 @@ public class S3FConfigurationService {
 
     public List<S3FConfiguration> readAll(String service, String version, String lifecycle) {
         return s3FConfigurationRepository.findByServiceAndVersionAndLifecycle(service, version, lifecycle);
+    }
+
+    public List<S3FConfiguration> readAll() {
+        return s3FConfigurationRepository.findAll();
     }
 
     public S3FConfiguration read(String service, String version, String lifecycle) throws Exception {
@@ -66,6 +71,10 @@ public class S3FConfigurationService {
 
     public S3FConfigurationRootDto build(List<S3FConfigurationConstantDto> s3FConfigurationConstants, S3FConfiguration s3FConfiguration) {
         return s3FConfigurationRootFactory.build(s3FConfigurationConstants, s3FConfiguration);
+    }
+
+    public List<S3FConfigurationRootDto> build(List<S3FConfigurationConstantDto> s3FConfigurationConstantDtos, List<S3FConfiguration> s3FConfigurations){
+        return s3FConfigurationRootFactory.build(s3FConfigurationConstantDtos, s3FConfigurations);
     }
 
     public void update(S3FConfiguration s3FConfiguration) throws Exception {

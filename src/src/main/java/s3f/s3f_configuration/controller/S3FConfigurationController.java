@@ -1,12 +1,14 @@
 package s3f.s3f_configuration.controller;
 
 import io.swagger.annotations.*;
+import org.apache.log4j.Level;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import s3f.framework.logger.LoggerHelper;
 import s3f.s3f_configuration.dto.S3FConfigurationConstantDto;
 import s3f.s3f_configuration.dto.S3FConfigurationDto;
 import s3f.s3f_configuration.entities.S3FConfiguration;
@@ -20,7 +22,7 @@ import java.util.List;
 @RequestMapping(value = "/api/v1")
 @Api(tags = "Application Configurations", value = "Shared Constants", description = "Key/Value List for Microservices")
 public class S3FConfigurationController {
-    private static final Logger LOGGER = LoggerFactory.getLogger(S3FConfigurationController.class);
+
     @Autowired
     private S3FConfigurationService s3FConfigurationService;
     @Autowired
@@ -46,13 +48,13 @@ public class S3FConfigurationController {
                     "The parameter service holds the name of the service which the service is acknowledged at the consul server. " +
                     "The parameter version holds the version of the service. Which is important to differ between the data structure definitions.", required = true)
             @RequestBody S3FConfigurationDto s3FConfigurationDto) {
-        LOGGER.info("Create new Configuration variable");
+        LoggerHelper.logData(Level.INFO, "Create configuration", "", "", S3FConfigurationController.class.getName());
         try {
-            LOGGER.info(s3FConfigurationDto.toString());
+            LoggerHelper.logData(Level.INFO, "Create configuration", "", "", S3FConfigurationController.class.getName());
             s3FConfigurationService.create(s3FConfigurationDto);
             return new ResponseEntity<>(HttpStatus.OK);
         } catch (Exception e) {
-            LOGGER.error("", e);
+            LoggerHelper.logData(Level.ERROR, "Create configuration", "", "", S3FConfigurationController.class.getName(), e);
             return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
@@ -71,13 +73,12 @@ public class S3FConfigurationController {
             "The is build up like the create parameter." +
             "The id of the data record is needed to identify the data record.", required = true)
                                     @RequestBody S3FConfiguration s3FConfigurationDto) {
-        LOGGER.info("Update Configuration");
+        LoggerHelper.logData(Level.INFO, "Update Configuration", "", "", S3FConfigurationController.class.getName());
         try {
-            LOGGER.info(s3FConfigurationDto.toString());
             s3FConfigurationService.update(s3FConfigurationDto);
             return new ResponseEntity<>(HttpStatus.OK);
         } catch (Exception e) {
-            LOGGER.error("", e);
+            LoggerHelper.logData(Level.ERROR, "Update Configuration", "", "", S3FConfigurationController.class.getName(), e);
             return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
@@ -86,25 +87,25 @@ public class S3FConfigurationController {
     @ApiOperation(value = "Build configuration with constant replaced", produces = "application/json",
             consumes = "application/json",
             notes = "Both configuration constants and the configuration itself will be merged together and will deliver a complete configuration. " +
-            "The configuration depends on the service, version and lifecyle.")
+                    "The configuration depends on the service, version and lifecyle.")
     @ApiResponses(value = {
             @ApiResponse(code = HttpURLConnection.HTTP_OK, message = "Configuration found", response = HttpStatus.class),
             @ApiResponse(code = HttpURLConnection.HTTP_INTERNAL_ERROR, message = "Configuration can't be found.", response = HttpStatus.class)
     })
     public ResponseEntity getRoot(
             @ApiParam(value = "The service parameter is sent from the gui. " +
-            "The service is needed to identify the data record.", required = true) @PathVariable String service,
+                    "The service is needed to identify the data record.", required = true) @PathVariable String service,
             @ApiParam(value = "The version parameter is sent from the gui. " +
-            "The version is needed to identify the data record.", required = true) @PathVariable String version,
+                    "The version is needed to identify the data record.", required = true) @PathVariable String version,
             @ApiParam(value = "The lifecycle parameter is sent from the gui. " +
-            "The lifecycle is needed to identify the data record.", required = true) @PathVariable String lifecycle) {
-        LOGGER.info("GET (single S3FConfiguration) " + service + " " + version + " " + lifecycle);
+                    "The lifecycle is needed to identify the data record.", required = true) @PathVariable String lifecycle) {
+        LoggerHelper.logData(Level.INFO, "GET (single S3FConfiguration) " + service + " " + version + " " + lifecycle, "", "", S3FConfigurationController.class.getName());
         try {
             final List<S3FConfigurationConstantDto> s3FConfigurationConstants = s3FConfigurationConstantService.readAll(version, lifecycle);
             final S3FConfiguration s3FConfiguration = s3FConfigurationService.read(service, version, lifecycle);
             return new ResponseEntity(s3FConfigurationService.build(s3FConfigurationConstants, s3FConfiguration), HttpStatus.OK);
         } catch (Exception e) {
-            LOGGER.error("", e);
+            LoggerHelper.logData(Level.ERROR, "GET (single S3FConfiguration) " + service + " " + version + " " + lifecycle, "", "", S3FConfigurationController.class.getName(), e);
             return new ResponseEntity(e.getLocalizedMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
@@ -118,17 +119,39 @@ public class S3FConfigurationController {
     })
     public ResponseEntity deleteConfiguration(
             @ApiParam(value = "The service parameter is sent from the gui. " +
-            "The service is needed to identify the data record.", required = true) @PathVariable String service,
+                    "The service is needed to identify the data record.", required = true) @PathVariable String service,
             @ApiParam(value = "The version parameter is sent from the gui. " +
-            "The version is needed to identify the data record.", required = true) @PathVariable String version,
+                    "The version is needed to identify the data record.", required = true) @PathVariable String version,
             @ApiParam(value = "The lifecycle parameter is sent from the gui. " +
-            "The lifecycle is needed to identify the data record.", required = true) @PathVariable String lifecycle) {
-        LOGGER.info("DELETE a S3FConfiguration) " + service + " " + version + " " + lifecycle);
+                    "The lifecycle is needed to identify the data record.", required = true) @PathVariable String lifecycle) {
+        LoggerHelper.logData(Level.INFO, "delete (single S3FConfiguration) " + service + " " + version + " " + lifecycle, "", "", S3FConfigurationController.class.getName());
         try {
             s3FConfigurationService.delete(service, version, lifecycle);
             return new ResponseEntity(HttpStatus.OK);
         } catch (Exception e) {
-            LOGGER.error("", e);
+            LoggerHelper.logData(Level.INFO, "GET (single S3FConfiguration) " + service + " " + version + " " + lifecycle, "", "", S3FConfigurationController.class.getName(), e);
+            return new ResponseEntity(e.getLocalizedMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
+
+    @RequestMapping(value = "/s3f-configuration", method = RequestMethod.GET)
+    @ApiOperation(value = "Build all configuration with constant replaced", produces = "application/json",
+            consumes = "application/json",
+            notes = "Both configuration constants and the configuration itself will be merged together and will deliver a complete configuration. " +
+                    "The configuration depends on the service, version and lifecyle.")
+    @ApiResponses(value = {
+            @ApiResponse(code = HttpURLConnection.HTTP_OK, message = "Configuration found", response = HttpStatus.class),
+            @ApiResponse(code = HttpURLConnection.HTTP_INTERNAL_ERROR, message = "Configuration can't be found.", response = HttpStatus.class)
+    })
+    public ResponseEntity getRootAll() {
+        LoggerHelper.logData(Level.INFO, "GET (all S3FConfiguration) ", "", "", S3FConfigurationController.class.getName());
+        try {
+            final List<S3FConfigurationConstantDto> s3FConfigurationConstants = s3FConfigurationConstantService.readAll();
+            final List<S3FConfiguration> s3FConfigurations = s3FConfigurationService.readAll();
+
+            return new ResponseEntity(s3FConfigurationService.build(s3FConfigurationConstants, s3FConfigurations), HttpStatus.OK);
+        } catch (Exception e) {
+            LoggerHelper.logData(Level.ERROR, "GET (single S3FConfiguration) ", "", "", S3FConfigurationController.class.getName(), e);
             return new ResponseEntity(e.getLocalizedMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }

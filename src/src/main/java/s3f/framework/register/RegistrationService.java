@@ -7,9 +7,9 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import s3f.Application;
 import s3f.framework.amqp.system.publisher.SystemQueuePublisher;
+import s3f.framework.config.ServletConfig;
 import s3f.framework.events.S3FEvent;
 import s3f.framework.lifecycle.LifeCycle;
-import s3f.framework.config.ServletConfig;
 
 @Service
 public class RegistrationService {

@@ -8,7 +8,6 @@ import s3f.s3f_configuration.repositories.S3FConfigurationConstantRepository;
 import java.util.ArrayList;
 import java.util.List;
 
-//Todo Klärung weshalb nicht mehr escaped werden muss
 @Service
 public class S3FConfigurationConstantService {
     @Autowired
@@ -72,6 +71,15 @@ public class S3FConfigurationConstantService {
 
     public List<S3FConfigurationConstantDto> readAll(String version, String lifecycle) {
         List<S3FConfigurationConstantDto> s3FConfigurationConstantDtos = s3FConfigurationConstantRepository.findByVersionAndLifecycle(version, lifecycle);
+        List<S3FConfigurationConstantDto> s3FConfigurationConstantDtosEncrypt = new ArrayList<>();
+        for (S3FConfigurationConstantDto temp : s3FConfigurationConstantDtos) {
+            s3FConfigurationConstantDtosEncrypt.add(encryptConstantDto(temp));
+        }
+        return s3FConfigurationConstantDtosEncrypt;
+    }
+
+    public List<S3FConfigurationConstantDto> readAll() {
+        List<S3FConfigurationConstantDto> s3FConfigurationConstantDtos = s3FConfigurationConstantRepository.findAll();
         List<S3FConfigurationConstantDto> s3FConfigurationConstantDtosEncrypt = new ArrayList<>();
         for (S3FConfigurationConstantDto temp : s3FConfigurationConstantDtos) {
             s3FConfigurationConstantDtosEncrypt.add(encryptConstantDto(temp));
