@@ -1,17 +1,18 @@
 package s3f.s3f_configuration.services;
 
-import org.junit.Before;
-import org.junit.Test;
-import org.springframework.test.util.ReflectionTestUtils;
-import s3f.s3f_configuration.dto.S3FConfigurationConstantDto;
-import s3f.s3f_configuration.repositories.S3FConfigurationConstantRepository;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
 import java.util.ArrayList;
 import java.util.List;
 
-import static org.hamcrest.CoreMatchers.is;
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.mockito.Mockito.*;
+import org.junit.Before;
+import org.junit.Test;
+import org.springframework.test.util.ReflectionTestUtils;
+
+import s3f.s3f_configuration.dto.S3FConfigurationConstantDto;
+import s3f.s3f_configuration.repositories.S3FConfigurationConstantRepository;
 
 public class S3FConfigurationConstantServiceTest {
     private S3FConfigurationConstantRepository s3FConfigurationConstantRepository;
@@ -24,8 +25,6 @@ public class S3FConfigurationConstantServiceTest {
         s3FConfigurationConstantRepository = mock(S3FConfigurationConstantRepository.class);
         s3FConfigurationConstantService = new S3FConfigurationConstantService();
         ReflectionTestUtils.setField(s3FConfigurationConstantService, "s3FConfigurationConstantRepository", s3FConfigurationConstantRepository);
-        ReflectionTestUtils.setField(s3FConfigurationConstantService, "encryptionDecryptionService", new EncryptionDecryptionService());
-        ReflectionTestUtils.setField(s3FConfigurationConstantService, "escapeService", new EscapeService());
     }
 
     @Test

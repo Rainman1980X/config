@@ -1,25 +1,15 @@
 package s3f;
 
-import org.apache.log4j.Level;
+import java.net.URL;
+import java.util.Map;
+
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.Bean;
-import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
-import org.springframework.web.servlet.config.annotation.WebMvcConfigurerAdapter;
-import s3f.framework.config.S3FPlaceholderConfigurer;
+
 import s3f.framework.interfaces.ApplicationConstants;
 import s3f.framework.lifecycle.LifeCycle;
 import s3f.framework.lifecycle.LifecycleUrlDictionary;
-import org.springframework.boot.SpringApplication;
-import org.springframework.context.annotation.Bean;
-import org.springframework.web.servlet.config.annotation.CorsRegistry;
-import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
-import org.springframework.web.servlet.config.annotation.WebMvcConfigurerAdapter;
-import s3f.framework.logger.LoggerHelper;
-
-import java.net.MalformedURLException;
-import java.net.URL;
-import java.util.Map;
 
 
 @SpringBootApplication
@@ -52,19 +42,6 @@ public class Application implements ApplicationConstants {
             }
         }
         return new LifeCycle(result);
-    }
-
-    @Bean
-    public WebMvcConfigurer corsConfigurer() {
-        return new WebMvcConfigurerAdapter() {
-            @Override
-            public void addCorsMappings(CorsRegistry registry) {
-                registry.addMapping("/api/v1").allowedOrigins("*");
-                registry.addMapping("/api/v1").allowedMethods("POST,PUT, GET, OPTIONS, DELETE");
-                registry.addMapping("/api/v1").allowedHeaders("Access-Control-Allow-Headers,Origin, X-Requested-With, Content-Type, Accept,AUTH-TOKEN");
-
-            }
-        };
     }
 
     @Override

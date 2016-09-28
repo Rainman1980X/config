@@ -4,7 +4,7 @@
 
     <groupId>sintec</groupId>
     <artifactId>sintec.s3f.mi-config</artifactId>
-    <version>1.0-SNAPSHOT</version>
+    <version>1.0</version>
     <packaging>jar</packaging>
 
     <name>sintec.s3f.mi-config</name>
@@ -86,7 +86,7 @@
         <dependency>
             <groupId>sintec.s3f</groupId>
             <artifactId>shared-lib</artifactId>
-            <version>1.0</version>
+            <version> 1.0.25</version>
         </dependency>
 
 

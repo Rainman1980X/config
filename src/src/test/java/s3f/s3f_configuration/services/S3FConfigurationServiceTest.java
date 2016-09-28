@@ -32,7 +32,6 @@ public class S3FConfigurationServiceTest {
         s3FConfigurationService = new S3FConfigurationService();
         s3FConfigurationRootFactory = mock(S3FConfigurationRootFactory.class);
         ReflectionTestUtils.setField(s3FConfigurationService, "s3FConfigurationRepository", s3FConfigurationRepository);
-        ReflectionTestUtils.setField(s3FConfigurationService, "escapeService", new EscapeService());
         ReflectionTestUtils.setField(s3FConfigurationService, "s3FConfigurationRootFactory", s3FConfigurationRootFactory);
     }
 

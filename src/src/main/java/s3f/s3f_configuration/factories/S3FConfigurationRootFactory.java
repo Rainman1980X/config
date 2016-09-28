@@ -1,10 +1,11 @@
 package s3f.s3f_configuration.factories;
 
 import org.springframework.stereotype.Component;
+
+import s3f.framework.security.EncryptionDecryptionService;
 import s3f.s3f_configuration.dto.S3FConfigurationConstantDto;
 import s3f.s3f_configuration.dto.S3FConfigurationRootDto;
 import s3f.s3f_configuration.entities.S3FConfiguration;
-import s3f.s3f_configuration.services.EncryptionDecryptionService;
 
 import java.util.ArrayList;
 import java.util.HashMap;

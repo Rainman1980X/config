@@ -1,20 +1,19 @@
 package s3f.s3f_configuration.services;
 
-import jdk.nashorn.internal.runtime.ECMAException;
+import java.util.List;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.stereotype.Service;
+
 import s3f.s3f_configuration.dto.S3FConfigurationConstantDto;
 import s3f.s3f_configuration.dto.S3FConfigurationDto;
 import s3f.s3f_configuration.dto.S3FConfigurationRootDto;
 import s3f.s3f_configuration.entities.S3FConfiguration;
 import s3f.s3f_configuration.factories.S3FConfigurationRootFactory;
 import s3f.s3f_configuration.repositories.S3FConfigurationRepository;
-
-import java.util.ArrayList;
-import java.util.List;
 
 @Service
 public class S3FConfigurationService {
@@ -25,21 +24,22 @@ public class S3FConfigurationService {
     private MongoTemplate mongoTemplate;
     @Autowired
     private S3FConfigurationRootFactory s3FConfigurationRootFactory;
-    @Autowired
-    private EscapeService escapeService;
 
     public void create(S3FConfigurationDto s3FConfigurationDto) throws Exception {
 
         try {
-            if (readAll(s3FConfigurationDto.getVersion(), s3FConfigurationDto.getLifecycle(), s3FConfigurationDto.getService()).size() > 0) {
-                throw new Exception("Duplicate entry");
-            }
-            S3FConfiguration s3FConfiguration = new S3FConfiguration(null,
-                    escapeService.escape(s3FConfigurationDto.getKeyValuePairs()),
-                    s3FConfigurationDto.getVersion(),
+            if (readAll(s3FConfigurationDto.getVersion(),
                     s3FConfigurationDto.getLifecycle(),
-                    s3FConfigurationDto.getService());
-            s3FConfigurationRepository.insert(s3FConfiguration);
+                    s3FConfigurationDto.getService()).size() > 0) {
+                throw new Exception("Duplicate entry");
+            } else {
+                S3FConfiguration s3FConfiguration = new S3FConfiguration(null,
+                        s3FConfigurationDto.getKeyValuePairs(),
+                        s3FConfigurationDto.getVersion(),
+                        s3FConfigurationDto.getLifecycle(),
+                        s3FConfigurationDto.getService());
+                s3FConfigurationRepository.insert(s3FConfiguration);
+            }
 
         } catch (Exception e) {
             throw e;
@@ -66,7 +66,7 @@ public class S3FConfigurationService {
         final S3FConfiguration s3FConfiguration = s3FConfigurations.get(s3FConfigurations.size() - 1);
         final S3FConfiguration unescaped = new S3FConfiguration(
                 s3FConfiguration.getId(),
-                escapeService.unescape(s3FConfiguration.getKeyValuePairs()),
+                s3FConfiguration.getKeyValuePairs(),
                 s3FConfiguration.getVersion(),
                 s3FConfiguration.getLifecycle(),
                 s3FConfiguration.getService()
@@ -100,7 +100,7 @@ public class S3FConfigurationService {
             throw new Exception("Unexpected count of configurations");
         }
         S3FConfiguration s3FConfigurationUpdate = new S3FConfiguration(s3FConfiguration.getId(),
-                escapeService.escape(s3FConfiguration.getKeyValuePairs()),
+                s3FConfiguration.getKeyValuePairs(),
                 s3FConfiguration.getVersion(),
                 s3FConfiguration.getLifecycle(),
                 s3FConfiguration.getService());
