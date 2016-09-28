@@ -40,8 +40,6 @@ public class Application implements ApplicationConstants {
         new LifecycleUrlDictionary().check(args);
         Application.lifecycle = new LifecycleUrlDictionary().getKey(args);
         SpringApplication.run(Application.class, args);
-        S3FPlaceholderConfigurer.initConfig(new Application());
-        LoggerHelper.initialize(new Application());
     }
 
     @Bean
@@ -67,6 +65,11 @@ public class Application implements ApplicationConstants {
 
             }
         };
+    }
+
+    @Override
+    public String getServiceName() {
+        return serviceName;
     }
 
     @Override

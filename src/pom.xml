@@ -17,7 +17,7 @@
     </parent>
 
     <dependencies>
-    
+
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter</artifactId>
@@ -85,9 +85,10 @@
 
         <dependency>
             <groupId>sintec.s3f</groupId>
-            <artifactId>sintec.s3f.lib-shared</artifactId>
+            <artifactId>shared-lib</artifactId>
             <version>1.0</version>
         </dependency>
+
 
     </dependencies>
 

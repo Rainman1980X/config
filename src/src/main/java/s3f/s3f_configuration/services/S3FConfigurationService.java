@@ -1,6 +1,10 @@
 package s3f.s3f_configuration.services;
 
+import jdk.nashorn.internal.runtime.ECMAException;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.mongodb.core.MongoTemplate;
+import org.springframework.data.mongodb.core.query.Criteria;
+import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.stereotype.Service;
 import s3f.s3f_configuration.dto.S3FConfigurationConstantDto;
 import s3f.s3f_configuration.dto.S3FConfigurationDto;
@@ -16,6 +20,9 @@ import java.util.List;
 public class S3FConfigurationService {
     @Autowired
     private S3FConfigurationRepository s3FConfigurationRepository;
+
+    @Autowired
+    private MongoTemplate mongoTemplate;
     @Autowired
     private S3FConfigurationRootFactory s3FConfigurationRootFactory;
     @Autowired
@@ -23,20 +30,28 @@ public class S3FConfigurationService {
 
     public void create(S3FConfigurationDto s3FConfigurationDto) throws Exception {
 
-        if (readAll(s3FConfigurationDto.getVersion(), s3FConfigurationDto.getLifecycle(), s3FConfigurationDto.getService()).size() > 0) {
-            throw new Exception("Duplicate entry");
-        }
-        S3FConfiguration s3FConfiguration = new S3FConfiguration(null,
-                escapeService.escape(s3FConfigurationDto.getKeyValuePairs()),
-                s3FConfigurationDto.getVersion(),
-                s3FConfigurationDto.getLifecycle(),
-                s3FConfigurationDto.getService());
-        s3FConfigurationRepository.save(s3FConfiguration);
+        try {
+            if (readAll(s3FConfigurationDto.getVersion(), s3FConfigurationDto.getLifecycle(), s3FConfigurationDto.getService()).size() > 0) {
+                throw new Exception("Duplicate entry");
+            }
+            S3FConfiguration s3FConfiguration = new S3FConfiguration(null,
+                    escapeService.escape(s3FConfigurationDto.getKeyValuePairs()),
+                    s3FConfigurationDto.getVersion(),
+                    s3FConfigurationDto.getLifecycle(),
+                    s3FConfigurationDto.getService());
+            s3FConfigurationRepository.insert(s3FConfiguration);
 
+        } catch (Exception e) {
+            throw e;
+        }
     }
 
     public List<S3FConfiguration> readAll(String service, String version, String lifecycle) {
-        return s3FConfigurationRepository.findByServiceAndVersionAndLifecycle(service, version, lifecycle);
+
+        return mongoTemplate.find(new Query(Criteria.where("service").is(service)
+                .andOperator(Criteria.where("version").is(version)
+                        .andOperator(Criteria.where("lifecycle").is(lifecycle)))
+        ), S3FConfiguration.class);
     }
 
     public List<S3FConfiguration> readAll() {
@@ -73,7 +88,7 @@ public class S3FConfigurationService {
         return s3FConfigurationRootFactory.build(s3FConfigurationConstants, s3FConfiguration);
     }
 
-    public List<S3FConfigurationRootDto> build(List<S3FConfigurationConstantDto> s3FConfigurationConstantDtos, List<S3FConfiguration> s3FConfigurations){
+    public List<S3FConfigurationRootDto> build(List<S3FConfigurationConstantDto> s3FConfigurationConstantDtos, List<S3FConfiguration> s3FConfigurations) {
         return s3FConfigurationRootFactory.build(s3FConfigurationConstantDtos, s3FConfigurations);
     }
 

@@ -4,3 +4,7 @@ target
 s3f-configuration.iml
 *.log
 /src/*.iml
+/src/*.project
+/src/*.classpath
+/*.userlibraries
+/src/*.eml

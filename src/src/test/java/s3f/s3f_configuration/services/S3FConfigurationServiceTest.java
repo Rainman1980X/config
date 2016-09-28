@@ -14,6 +14,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import static org.junit.Assert.fail;
 import static org.mockito.Matchers.any;
 import static org.mockito.Mockito.*;
 
@@ -66,7 +67,11 @@ public class S3FConfigurationServiceTest {
         keyValuePairs.put("emergencyUNCPath", "\\\\san1.de\\emerg\\sample");
 
         s3FConfigurations.add(new S3FConfiguration("id", keyValuePairs, version, lifecycle, service));
-        s3FConfigurationService.readAll(service, version, lifecycle);
+        try {
+            s3FConfigurationService.readAll(service, version, lifecycle);
+        } catch (Exception e) {
+            fail("Create method " + e.getMessage());
+        }
 
         verify(s3FConfigurationRepository).findByServiceAndVersionAndLifecycle(service, version, lifecycle);
     }
