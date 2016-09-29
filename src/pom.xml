@@ -66,17 +66,6 @@
             <artifactId>amqp-client</artifactId>
             <version>3.6.5</version>
         </dependency>
-
-        <dependency>
-            <groupId>com.google.code.gson</groupId>
-            <artifactId>gson</artifactId>
-            <version>2.7</version>
-        </dependency>
-        <dependency>
-            <groupId>commons-codec</groupId>
-            <artifactId>commons-codec</artifactId>
-            <version>1.9</version>
-        </dependency>
         <dependency>
             <groupId>commons-lang</groupId>
             <artifactId>commons-lang</artifactId>
@@ -86,7 +75,7 @@
         <dependency>
             <groupId>sintec.s3f</groupId>
             <artifactId>shared-lib</artifactId>
-            <version> 1.0.25</version>
+            <version> 1.1.27</version>
         </dependency>
 
 

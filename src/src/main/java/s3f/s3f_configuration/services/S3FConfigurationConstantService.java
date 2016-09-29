@@ -17,12 +17,20 @@ public class S3FConfigurationConstantService {
 
 	public void create(S3FConfigurationConstantDto s3FConfigurationConstantDto) throws Exception {
 
-		String constantValue = EncryptionDecryptionService.encrypt(s3FConfigurationConstantDto.getConstantValue());
+		final List<S3FConfigurationConstantDto> s3FConfigurationConstantDtos = s3FConfigurationConstantRepository
+				.findByVersionAndLifecycleAndConstantName(s3FConfigurationConstantDto.getVersion(),
+						s3FConfigurationConstantDto.getLifecycle(), s3FConfigurationConstantDto.getConstantName());
+		if (s3FConfigurationConstantDtos.size() > 0) {
+			throw new Exception("Duplicate entry found for " + s3FConfigurationConstantDtos.get(0).getConstantName());
+		} else {
 
-		S3FConfigurationConstantDto s3FConfigurationConstantEnc = new S3FConfigurationConstantDto(
-				s3FConfigurationConstantDto.getVersion(), s3FConfigurationConstantDto.getLifecycle(),
-				s3FConfigurationConstantDto.getConstantName(), constantValue);
-		s3FConfigurationConstantRepository.save(s3FConfigurationConstantEnc);
+			String constantValue = EncryptionDecryptionService.encrypt(s3FConfigurationConstantDto.getConstantValue());
+
+			S3FConfigurationConstantDto s3FConfigurationConstantEnc = new S3FConfigurationConstantDto(
+					s3FConfigurationConstantDto.getVersion(), s3FConfigurationConstantDto.getLifecycle(),
+					s3FConfigurationConstantDto.getConstantName(), constantValue);
+			s3FConfigurationConstantRepository.save(s3FConfigurationConstantEnc);
+		}
 	}
 
 	public void update(S3FConfigurationConstantDto s3FConfigurationConstantDto) throws Exception {
@@ -31,21 +39,19 @@ public class S3FConfigurationConstantService {
 						s3FConfigurationConstantDto.getLifecycle(), s3FConfigurationConstantDto.getConstantName());
 		if (s3FConfigurationConstantDtos.isEmpty()) {
 			throw new Exception("No Configurations constant found");
+		} else {
+
+			S3FConfigurationConstantDto s3FConfigurationConstantDtoTemp;
+			s3FConfigurationConstantDtoTemp = s3FConfigurationConstantDtos.get(0);
+
+			String constantValue = EncryptionDecryptionService.encrypt(s3FConfigurationConstantDto.getConstantValue());
+
+			S3FConfigurationConstantDto s3FConfigurationConstantEnc = new S3FConfigurationConstantDto(
+					s3FConfigurationConstantDtoTemp.getId(), s3FConfigurationConstantDtoTemp.getVersion(),
+					s3FConfigurationConstantDtoTemp.getLifecycle(), s3FConfigurationConstantDtoTemp.getConstantName(),
+					constantValue);
+			s3FConfigurationConstantRepository.save(s3FConfigurationConstantEnc);
 		}
-		S3FConfigurationConstantDto s3FConfigurationConstantDtoTemp;
-		if (s3FConfigurationConstantDtos.size() > 1) {
-			throw new Exception("Duplicate entry found for " + s3FConfigurationConstantDtos.get(0).getConstantName());
-		}
-
-		s3FConfigurationConstantDtoTemp = s3FConfigurationConstantDtos.get(0);
-
-		String constantValue = EncryptionDecryptionService.encrypt(s3FConfigurationConstantDto.getConstantValue());
-
-		S3FConfigurationConstantDto s3FConfigurationConstantEnc = new S3FConfigurationConstantDto(
-				s3FConfigurationConstantDtoTemp.getId(), s3FConfigurationConstantDtoTemp.getVersion(),
-				s3FConfigurationConstantDtoTemp.getLifecycle(), s3FConfigurationConstantDtoTemp.getConstantName(),
-				constantValue);
-		s3FConfigurationConstantRepository.save(s3FConfigurationConstantEnc);
 	}
 
 	public S3FConfigurationConstantDto read(String version, String lifecycle, String constantName) throws Exception {
@@ -53,13 +59,12 @@ public class S3FConfigurationConstantService {
 				.findByVersionAndLifecycleAndConstantName(version, lifecycle, constantName);
 		if (s3FConfigurationConstantDtos.isEmpty()) {
 			throw new Exception("No Configurations constant found");
+		} else {
+			S3FConfigurationConstantDto s3FConfigurationConstantDto;
+
+			s3FConfigurationConstantDto = s3FConfigurationConstantDtos.get(0);
+			return encryptConstantDto(s3FConfigurationConstantDto);
 		}
-		S3FConfigurationConstantDto s3FConfigurationConstantDto;
-		if (s3FConfigurationConstantDtos.size() > 1) {
-			throw new Exception("Duplicate entry found for " + s3FConfigurationConstantDtos.get(0).getConstantName());
-		}
-		s3FConfigurationConstantDto = s3FConfigurationConstantDtos.get(0);
-		return encryptConstantDto(s3FConfigurationConstantDto);
 	}
 
 	public List<S3FConfigurationConstantDto> readAll(String version, String lifecycle) {
