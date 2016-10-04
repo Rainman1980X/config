@@ -39,7 +39,8 @@ public class S3FConfigurationController {
             @ApiResponse(code = HttpURLConnection.HTTP_INTERNAL_ERROR, message = "Configuration can't be saved. May be a duplicate entry. ", response = HttpStatus.class)
     })
     @CrossOrigin
-    public ResponseEntity<?> create(
+    public ResponseEntity<?> create(@RequestHeader(value = "Authorization") String authorization,
+			@RequestHeader(value = "CorrelationToken") String correlationToken,
             @ApiParam(value = "The created configuration sent from the gui. " +
                     "The parameter keyValuePairs holds the complete configuration definition. The keyValuePairs is a commaseperated array" +
                     "{\"VariableName1\" : \"VariableValue1\"," +
@@ -69,7 +70,8 @@ public class S3FConfigurationController {
             @ApiResponse(code = HttpURLConnection.HTTP_OK, message = "Update a configuration was successful.", response = HttpStatus.class),
             @ApiResponse(code = HttpURLConnection.HTTP_INTERNAL_ERROR, message = "Configuration can't be saved. May be a duplicate entry. ", response = HttpStatus.class)
     })
-    public ResponseEntity<?> update(@ApiParam(value = "The update configuration sent from the gui. " +
+    public ResponseEntity<?> update(@RequestHeader(value = "Authorization") String authorization,
+			@RequestHeader(value = "CorrelationToken") String correlationToken,@ApiParam(value = "The update configuration sent from the gui. " +
             "The is build up like the create parameter." +
             "The id of the data record is needed to identify the data record.", required = true)
                                     @RequestBody S3FConfiguration s3FConfigurationDto) {
@@ -92,7 +94,8 @@ public class S3FConfigurationController {
             @ApiResponse(code = HttpURLConnection.HTTP_OK, message = "Configuration found", response = HttpStatus.class),
             @ApiResponse(code = HttpURLConnection.HTTP_INTERNAL_ERROR, message = "Configuration can't be found.", response = HttpStatus.class)
     })
-    public ResponseEntity getRoot(
+    public ResponseEntity getRoot(@RequestHeader(value = "Authorization") String authorization,
+			@RequestHeader(value = "CorrelationToken") String correlationToken,
             @ApiParam(value = "The service parameter is sent from the gui. " +
                     "The service is needed to identify the data record.", required = true) @PathVariable String service,
             @ApiParam(value = "The version parameter is sent from the gui. " +
@@ -117,7 +120,8 @@ public class S3FConfigurationController {
             @ApiResponse(code = HttpURLConnection.HTTP_OK, message = "Configuration successfully deleted", response = HttpStatus.class),
             @ApiResponse(code = HttpURLConnection.HTTP_INTERNAL_ERROR, message = "Configuration can't be found.", response = HttpStatus.class)
     })
-    public ResponseEntity deleteConfiguration(
+    public ResponseEntity deleteConfiguration(@RequestHeader(value = "Authorization") String authorization,
+			@RequestHeader(value = "CorrelationToken") String correlationToken,
             @ApiParam(value = "The service parameter is sent from the gui. " +
                     "The service is needed to identify the data record.", required = true) @PathVariable String service,
             @ApiParam(value = "The version parameter is sent from the gui. " +
@@ -143,7 +147,8 @@ public class S3FConfigurationController {
             @ApiResponse(code = HttpURLConnection.HTTP_OK, message = "Configuration found", response = HttpStatus.class),
             @ApiResponse(code = HttpURLConnection.HTTP_INTERNAL_ERROR, message = "Configuration can't be found.", response = HttpStatus.class)
     })
-    public ResponseEntity getRootAll() {
+    public ResponseEntity getRootAll(@RequestHeader(value = "Authorization") String authorization,
+			@RequestHeader(value = "CorrelationToken") String correlationToken) {
         LoggerHelper.logData(Level.INFO, "GET (all S3FConfiguration) ", "", "", S3FConfigurationController.class.getName());
         try {
             final List<S3FConfigurationConstantDto> s3FConfigurationConstants = s3FConfigurationConstantService.readAll();

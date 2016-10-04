@@ -5,6 +5,8 @@ import org.junit.Test;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.test.util.ReflectionTestUtils;
+import org.springframework.web.bind.annotation.RequestHeader;
+
 import s3f.s3f_configuration.dto.S3FConfigurationDto;
 import s3f.s3f_configuration.services.S3FConfigurationConstantService;
 import s3f.s3f_configuration.services.S3FConfigurationService;
@@ -23,6 +25,8 @@ public class S3FConfigurationControllerTest {
     final String service = "ka-upload";
     final String version = "v1";
     final String lifecycle = "production";
+    final String authorization="1111";
+	final String correlationToken ="333";
 
     @Before
     public void setUp() {
@@ -35,7 +39,8 @@ public class S3FConfigurationControllerTest {
 
     @Test
     public void getRoot() throws Exception {
-        ResponseEntity responseEntity = s3FConfigurationController.getRoot(service, version, lifecycle);
+        
+		ResponseEntity responseEntity = s3FConfigurationController.getRoot( authorization, correlationToken,service, version, lifecycle);
 
         assertThat(responseEntity.getStatusCode(), is(HttpStatus.OK));
         verify(s3FConfigurationConstantService).readAll(version, lifecycle);
@@ -48,7 +53,7 @@ public class S3FConfigurationControllerTest {
         keyValuePairs.put("server.port", "30100");
         final S3FConfigurationDto s3FConfigurationDto = new S3FConfigurationDto(keyValuePairs, version, lifecycle, service);
 
-        ResponseEntity responseEntity = s3FConfigurationController.create(s3FConfigurationDto);
+        ResponseEntity responseEntity = s3FConfigurationController.create(authorization, correlationToken,s3FConfigurationDto);
 
         assertThat(responseEntity.getStatusCode(), is(HttpStatus.OK));
         verify(s3FConfigurationService).create(s3FConfigurationDto);
