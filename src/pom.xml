@@ -75,7 +75,7 @@
         <dependency>
             <groupId>sintec.s3f</groupId>
             <artifactId>shared-lib</artifactId>
-            <version> 1.1.27</version>
+            <version> 1.2.34</version>
         </dependency>
 
 
