@@ -1,13 +1,24 @@
 package s3f.s3f_configuration.controller;
 
-import io.swagger.annotations.*;
+import java.util.List;
+
 import org.apache.log4j.Level;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.CrossOrigin;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestHeader;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RestController;
+
+import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiOperation;
+import io.swagger.annotations.ApiParam;
+import io.swagger.annotations.ApiResponse;
+import io.swagger.annotations.ApiResponses;
 import s3f.framework.logger.LoggerHelper;
 import s3f.s3f_configuration.dto.S3FConfigurationConstantDto;
 import s3f.s3f_configuration.dto.S3FConfigurationDto;
@@ -15,8 +26,6 @@ import s3f.s3f_configuration.entities.S3FConfiguration;
 import s3f.s3f_configuration.services.S3FConfigurationConstantService;
 import s3f.s3f_configuration.services.S3FConfigurationService;
 import sun.net.www.protocol.http.HttpURLConnection;
-
-import java.util.List;
 
 @RestController
 @RequestMapping(value = "/api/v1")
