@@ -18,6 +18,7 @@ import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiResponse;
 import io.swagger.annotations.ApiResponses;
 import s3f.s3f_configuration.action.constants.CreateConstantAction;
+import s3f.s3f_configuration.action.constants.EditConstantAction;
 import s3f.s3f_configuration.dto.S3FConfigurationConstantDto;
 import s3f.s3f_configuration.repositories.S3FConfigurationConstantRepository;
 import s3f.s3f_configuration.services.S3FConfigurationConstantService;
@@ -45,14 +46,6 @@ public class S3FConfigurationConstantController {
 	    @RequestHeader(value = "Authorization") String authorization,
 	    @RequestHeader(value = "CorrelationToken") String correlationToken,
 	    @RequestBody S3FConfigurationConstantDto s3FConfigurationConstantDto) {
-	// LOGGER.info("PUT");
-	// try {
-	// LOGGER.info(s3FConfigurationConstantDto.toString());
-	// s3FConfigurationConstantService.create(s3FConfigurationConstantDto);
-	// } catch (Exception e) {
-	// LOGGER.error("", e);
-	// return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
-	// }
 	return (new CreateConstantAction()).doActionOnConstant(s3fConfigurationConstantRepository, mongoTemplate,
 		authorization, correlationToken, s3FConfigurationConstantDto);
     }
@@ -69,8 +62,7 @@ public class S3FConfigurationConstantController {
 	ResponseEntity<?> responseEntity;
 	try {
 	    responseEntity = new ResponseEntity<>(
-		    s3FConfigurationConstantService.read(version, lifecycle, constantName),
-		    HttpStatus.OK);
+		    s3FConfigurationConstantService.read(version, lifecycle, constantName), HttpStatus.OK);
 	} catch (Exception e) {
 	    LOGGER.error("", e);
 	    responseEntity = new ResponseEntity<>(e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
@@ -82,20 +74,13 @@ public class S3FConfigurationConstantController {
     @ApiOperation(value = "Update a configurarion constant", produces = "application/json", consumes = "application/json")
     @ApiResponses(value = {
 	    @ApiResponse(code = HttpURLConnection.HTTP_OK, message = "Configuration constant found.", response = HttpStatus.class),
+	    @ApiResponse(code = HttpURLConnection.HTTP_NOT_FOUND, message = "Configuration constant not found.", response = HttpStatus.class),
 	    @ApiResponse(code = HttpURLConnection.HTTP_INTERNAL_ERROR, message = "Configuration constant can't be found.", response = HttpStatus.class) })
-    public ResponseEntity<?> update(@RequestHeader(value = "Authorization") String authorization,
+    public ResponseEntity<HttpStatus> update(@RequestHeader(value = "Authorization") String authorization,
 	    @RequestHeader(value = "CorrelationToken") String correlationToken,
-	    @RequestBody S3FConfigurationConstantDto s3FConfigurationConstant) {
-	LOGGER.info("POST");
-	ResponseEntity<?> responseEntity;
-	try {
-	    s3FConfigurationConstantService.update(s3FConfigurationConstant);
-	    responseEntity = new ResponseEntity<>(HttpStatus.OK);
-	} catch (Exception e) {
-	    LOGGER.error("", e);
-	    responseEntity = new ResponseEntity<>(e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
-	}
-	return responseEntity;
+	    @RequestBody S3FConfigurationConstantDto s3FConfigurationConstantDto) {
+	return (new EditConstantAction()).doActionOnConstant(s3fConfigurationConstantRepository, mongoTemplate,
+		authorization, correlationToken, s3FConfigurationConstantDto);
     }
 
     @RequestMapping(value = "/api/v1/s3f-configuration/constant/{version}/{lifecycle}", method = RequestMethod.GET)
