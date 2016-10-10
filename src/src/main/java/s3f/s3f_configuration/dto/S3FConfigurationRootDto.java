@@ -3,13 +3,15 @@ package s3f.s3f_configuration.dto;
 import java.util.Map;
 
 public class S3FConfigurationRootDto {
+    private final String id;
     private final Map<String, String> keyValuePairs;
     private final String version;
     private final String lifecycle;
     private final String service;
 
-    public S3FConfigurationRootDto(Map<String, String> keyValuePairs, String version, String lifecycle, String service) {
-        this.keyValuePairs = keyValuePairs;
+    public S3FConfigurationRootDto(String id, Map<String, String> keyValuePairs, String version, String lifecycle, String service) {
+        this.id = id;
+	this.keyValuePairs = keyValuePairs;
         this.version = version;
         this.lifecycle = lifecycle;
         this.service = service;

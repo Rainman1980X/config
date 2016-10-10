@@ -1,18 +1,22 @@
 package s3f.s3f_configuration.controller;
 
+import static org.hamcrest.CoreMatchers.is;
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
+
 import org.junit.Before;
 import org.junit.Test;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.test.util.ReflectionTestUtils;
+
 import s3f.s3f_configuration.dto.S3FConfigurationConstantDto;
 import s3f.s3f_configuration.services.S3FConfigurationConstantService;
 
-import static org.hamcrest.CoreMatchers.is;
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.mockito.Mockito.*;
-
 public class S3FConfigurationConstantControllerTest {
+    private final String id = "test_2908233490284ß902842390";
     private final String version = "v1";
     private final String lifecycle = "develop";
     private S3FConfigurationConstantService s3FConfigurationConstantService;
@@ -52,10 +56,10 @@ public class S3FConfigurationConstantControllerTest {
     }
 
     private S3FConfigurationConstantDto s3FConfigurationConstantDto() {
-        return new S3FConfigurationConstantDto( version, lifecycle,"encMongoDBHost", "$encMongoDBHost");
+	return new S3FConfigurationConstantDto(id, version, lifecycle, "encMongoDBHost", "$encMongoDBHost");
     }
 
     private S3FConfigurationConstantDto s3FConfigurationConstant() {
-        return new S3FConfigurationConstantDto(version, lifecycle,"encMongoDBHost", "$encMongoDBHost");
+	return new S3FConfigurationConstantDto(id, version, lifecycle, "encMongoDBHost", "$encMongoDBHost");
     }
 }

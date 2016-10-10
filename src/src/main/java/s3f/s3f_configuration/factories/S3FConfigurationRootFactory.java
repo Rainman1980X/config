@@ -1,17 +1,16 @@
 package s3f.s3f_configuration.factories;
 
-import org.springframework.stereotype.Component;
-
-import s3f.framework.security.EncryptionDecryptionService;
-import s3f.s3f_configuration.dto.S3FConfigurationConstantDto;
-import s3f.s3f_configuration.dto.S3FConfigurationRootDto;
-import s3f.s3f_configuration.entities.S3FConfiguration;
-
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
+
+import org.springframework.stereotype.Component;
+
+import s3f.s3f_configuration.dto.S3FConfigurationConstantDto;
+import s3f.s3f_configuration.dto.S3FConfigurationRootDto;
+import s3f.s3f_configuration.entities.S3FConfiguration;
 
 @Component
 public class S3FConfigurationRootFactory {
@@ -37,7 +36,8 @@ public class S3FConfigurationRootFactory {
                 mergedKeyValuePairs.put(keyAndValue.getKey(), keyAndValue.getValue());
             }
         }
-        return new S3FConfigurationRootDto(mergedKeyValuePairs, s3FConfiguration.getVersion(), s3FConfiguration.getLifecycle(), s3FConfiguration.getService());
+	return new S3FConfigurationRootDto(s3FConfiguration.getId(), mergedKeyValuePairs, s3FConfiguration.getVersion(),
+		s3FConfiguration.getLifecycle(), s3FConfiguration.getService());
     }
 
     public List<S3FConfigurationRootDto> build(List<S3FConfigurationConstantDto> s3FConfigurationConstantDtos, List<S3FConfiguration> s3FConfigurations) {
@@ -61,7 +61,8 @@ public class S3FConfigurationRootFactory {
                     mergedKeyValuePairs.put(keyAndValue.getKey(), keyAndValue.getValue());
                 }
             }
-            s3FConfigurationRootDtos.add(new S3FConfigurationRootDto(mergedKeyValuePairs, s3FConfiguration.getVersion(), s3FConfiguration.getLifecycle(), s3FConfiguration.getService()));
+	    s3FConfigurationRootDtos.add(new S3FConfigurationRootDto(s3FConfiguration.getId(), mergedKeyValuePairs,
+		    s3FConfiguration.getVersion(), s3FConfiguration.getLifecycle(), s3FConfiguration.getService()));
         }
 
         return s3FConfigurationRootDtos;

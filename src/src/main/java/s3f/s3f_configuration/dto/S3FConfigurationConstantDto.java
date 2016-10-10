@@ -13,13 +13,6 @@ public class S3FConfigurationConstantDto {
 
     public S3FConfigurationConstantDto(){}
 
-    public S3FConfigurationConstantDto(String version, String lifecycle, String constantName, String constantValue) {
-        this.version = version;
-        this.lifecycle = lifecycle;
-        this.constantName = constantName;
-        this.constantValue = constantValue;
-    }
-
     public S3FConfigurationConstantDto(String id, String version, String lifecycle, String constantName, String constantValue) {
         this.id = id;
         this.version = version;
