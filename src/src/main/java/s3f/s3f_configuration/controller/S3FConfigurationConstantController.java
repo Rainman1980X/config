@@ -1,5 +1,9 @@
 package s3f.s3f_configuration.controller;
 
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,6 +23,7 @@ import io.swagger.annotations.ApiResponse;
 import io.swagger.annotations.ApiResponses;
 import s3f.s3f_configuration.action.constants.CreateConstantAction;
 import s3f.s3f_configuration.action.constants.EditConstantAction;
+import s3f.s3f_configuration.action.constants.ReadAllConstantAction;
 import s3f.s3f_configuration.dto.S3FConfigurationConstantDto;
 import s3f.s3f_configuration.repositories.S3FConfigurationConstantRepository;
 import s3f.s3f_configuration.services.S3FConfigurationConstantService;
@@ -55,7 +60,8 @@ public class S3FConfigurationConstantController {
     @ApiResponses(value = {
 	    @ApiResponse(code = HttpURLConnection.HTTP_OK, message = "Configuration constant found.", response = HttpStatus.class),
 	    @ApiResponse(code = HttpURLConnection.HTTP_INTERNAL_ERROR, message = "Configuration constant can't be found.", response = HttpStatus.class) })
-    public ResponseEntity<?> read(@RequestHeader(value = "Authorization") String authorization,
+    public ResponseEntity<S3FConfigurationConstantDto> read(
+	    @RequestHeader(value = "Authorization") String authorization,
 	    @RequestHeader(value = "CorrelationToken") String correlationToken, @PathVariable String version,
 	    @PathVariable String lifecycle, @PathVariable String constantName) {
 	LOGGER.info("GET (single S3FConfigurationConstant) " + version + " " + lifecycle + " " + constantName);
@@ -67,7 +73,7 @@ public class S3FConfigurationConstantController {
 	    LOGGER.error("", e);
 	    responseEntity = new ResponseEntity<>(e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
 	}
-	return responseEntity;
+	return (ResponseEntity<S3FConfigurationConstantDto>) responseEntity;
     }
 
     @RequestMapping(value = "/api/v1/s3f-configuration/constant", method = RequestMethod.POST)
@@ -87,21 +93,19 @@ public class S3FConfigurationConstantController {
     @ApiOperation(value = "Get the list of configuration constants", produces = "application/json", consumes = "application/json")
     @ApiResponses(value = {
 	    @ApiResponse(code = HttpURLConnection.HTTP_OK, message = "Configuration constant list found.", response = HttpStatus.class),
+	    @ApiResponse(code = HttpURLConnection.HTTP_NOT_FOUND, message = "Configuration constant not found.", response = HttpStatus.class),
 	    @ApiResponse(code = HttpURLConnection.HTTP_INTERNAL_ERROR, message = "Configuration constant can't be found.", response = HttpStatus.class) })
-    public ResponseEntity<?> readAll(@RequestHeader(value = "Authorization") String authorization,
+    public ResponseEntity<List<S3FConfigurationConstantDto>> readAll(
+	    @RequestHeader(value = "Authorization") String authorization,
 	    @RequestHeader(value = "CorrelationToken") String correlationToken, @PathVariable String version,
 	    @PathVariable String lifecycle) {
 
-	LOGGER.info("GET (List S3FConfigurationConstant) " + version + " " + lifecycle);
-	ResponseEntity<?> responseEntity;
-	try {
-	    responseEntity = new ResponseEntity<>(s3FConfigurationConstantService.readAll(version, lifecycle),
-		    HttpStatus.OK);
-	} catch (Exception e) {
-	    LOGGER.error("", e);
-	    responseEntity = new ResponseEntity<>(e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
-	}
-	return responseEntity;
+	Map<String, String> httpsValues = new HashMap<>();
+	httpsValues.put("version", version);
+	httpsValues.put("lifecycle", lifecycle);
+
+	return (new ReadAllConstantAction()).doActionOnConstant(s3fConfigurationConstantRepository, mongoTemplate,
+		authorization, correlationToken, httpsValues);
     }
 
     @RequestMapping(value = "/api/v1/s3f-configuration/constant/{version}/{lifecycle}/{constantName}", method = RequestMethod.DELETE)
