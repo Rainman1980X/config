@@ -4,8 +4,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.http.HttpStatus;
@@ -22,19 +20,17 @@ import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiResponse;
 import io.swagger.annotations.ApiResponses;
 import s3f.s3f_configuration.action.constants.CreateConstantAction;
+import s3f.s3f_configuration.action.constants.DeleteConstantAction;
 import s3f.s3f_configuration.action.constants.EditConstantAction;
 import s3f.s3f_configuration.action.constants.ReadAllConstantAction;
+import s3f.s3f_configuration.action.constants.ReadConstantAction;
 import s3f.s3f_configuration.dto.S3FConfigurationConstantDto;
 import s3f.s3f_configuration.repositories.S3FConfigurationConstantRepository;
-import s3f.s3f_configuration.services.S3FConfigurationConstantService;
 import sun.net.www.protocol.http.HttpURLConnection;
 
 @RestController
 @Api(tags = "Shared Constants", value = "Shared Constants", description = "Simplify configuration")
 public class S3FConfigurationConstantController {
-    private static final Logger LOGGER = LoggerFactory.getLogger(S3FConfigurationConstantController.class);
-    @Autowired
-    private S3FConfigurationConstantService s3FConfigurationConstantService;
 
     @Autowired
     private S3FConfigurationConstantRepository s3fConfigurationConstantRepository;
@@ -64,16 +60,14 @@ public class S3FConfigurationConstantController {
 	    @RequestHeader(value = "Authorization") String authorization,
 	    @RequestHeader(value = "CorrelationToken") String correlationToken, @PathVariable String version,
 	    @PathVariable String lifecycle, @PathVariable String constantName) {
-	LOGGER.info("GET (single S3FConfigurationConstant) " + version + " " + lifecycle + " " + constantName);
-	ResponseEntity<?> responseEntity;
-	try {
-	    responseEntity = new ResponseEntity<>(
-		    s3FConfigurationConstantService.read(version, lifecycle, constantName), HttpStatus.OK);
-	} catch (Exception e) {
-	    LOGGER.error("", e);
-	    responseEntity = new ResponseEntity<>(e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
-	}
-	return (ResponseEntity<S3FConfigurationConstantDto>) responseEntity;
+
+	Map<String, String> httpsValues = new HashMap<>();
+	httpsValues.put("version", version);
+	httpsValues.put("lifecycle", lifecycle);
+	httpsValues.put("constantName", constantName);
+
+	return (new ReadConstantAction()).doActionOnConstant(s3fConfigurationConstantRepository, mongoTemplate,
+		authorization, correlationToken, httpsValues);
     }
 
     @RequestMapping(value = "/api/v1/s3f-configuration/constant", method = RequestMethod.POST)
@@ -112,18 +106,18 @@ public class S3FConfigurationConstantController {
     @ApiOperation(value = "Removes a constant", produces = "application/json", consumes = "application/json")
     @ApiResponses(value = {
 	    @ApiResponse(code = HttpURLConnection.HTTP_OK, message = "Configuration constant removed.", response = HttpStatus.class),
+	    @ApiResponse(code = HttpURLConnection.HTTP_NOT_FOUND, message = "Configuration constant not found.", response = HttpStatus.class),
 	    @ApiResponse(code = HttpURLConnection.HTTP_INTERNAL_ERROR, message = "Configuration constant can't be removed.", response = HttpStatus.class) })
-    public ResponseEntity<?> delete(@RequestHeader(value = "Authorization") String authorization,
+    public ResponseEntity<HttpStatus> delete(@RequestHeader(value = "Authorization") String authorization,
 	    @RequestHeader(value = "CorrelationToken") String correlationToken, @PathVariable String version,
 	    @PathVariable String lifecycle, @PathVariable String constantName) {
 
-	LOGGER.info("Delete  " + version + " " + lifecycle + " " + constantName + " from the list");
-	try {
-	    s3FConfigurationConstantService.remove(version, lifecycle, constantName);
-	    return new ResponseEntity<>(HttpStatus.OK);
-	} catch (Exception e) {
-	    LOGGER.error("", e);
-	    return new ResponseEntity<>(e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
-	}
+	Map<String, String> httpsValues = new HashMap<>();
+	httpsValues.put("version", version);
+	httpsValues.put("lifecycle", lifecycle);
+	httpsValues.put("constantName", constantName);
+
+	return (new DeleteConstantAction()).doActionOnConstant(s3fConfigurationConstantRepository, mongoTemplate,
+		authorization, correlationToken, httpsValues);
     }
 }

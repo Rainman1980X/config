@@ -29,7 +29,6 @@ import s3f.s3f_configuration.dto.S3FConfigurationDto;
 import s3f.s3f_configuration.dto.S3FConfigurationRootDto;
 import s3f.s3f_configuration.entities.S3FConfiguration;
 import s3f.s3f_configuration.repositories.S3FConfigurationConstantRepository;
-import s3f.s3f_configuration.services.S3FConfigurationConstantService;
 import s3f.s3f_configuration.services.S3FConfigurationService;
 import sun.net.www.protocol.http.HttpURLConnection;
 
@@ -40,8 +39,6 @@ public class S3FConfigurationController {
 
     @Autowired
     private S3FConfigurationService s3FConfigurationService;
-    @Autowired
-    private S3FConfigurationConstantService s3FConfigurationConstantService;
 
     @Autowired
     private S3FConfigurationConstantRepository s3fConfigurationConstantRepository;
@@ -172,8 +169,10 @@ public class S3FConfigurationController {
 	LoggerHelper.logData(Level.INFO, "GET (all S3FConfiguration) ", "", "",
 		S3FConfigurationController.class.getName());
 	try {
-	    final List<S3FConfigurationConstantDto> s3FConfigurationConstants = s3FConfigurationConstantService
-		    .readAll();
+	    final List<S3FConfigurationConstantDto> s3FConfigurationConstants = (new ReadAllConstantAction())
+		    .doActionOnConstant(s3fConfigurationConstantRepository, mongoTemplate, authorization,
+			    correlationToken, new HashMap<>())
+		    .getBody();
 	    final List<S3FConfiguration> s3FConfigurations = s3FConfigurationService.readAll();
 
 	    return new ResponseEntity(s3FConfigurationService.build(s3FConfigurationConstants, s3FConfigurations),

@@ -6,12 +6,10 @@ import org.junit.Before;
 import org.junit.Test;
 import org.springframework.test.util.ReflectionTestUtils;
 
-import s3f.s3f_configuration.services.S3FConfigurationConstantService;
 import s3f.s3f_configuration.services.S3FConfigurationService;
 
 public class S3FConfigurationControllerTest {
     private S3FConfigurationService s3FConfigurationService;
-    private S3FConfigurationConstantService s3FConfigurationConstantService;
     private S3FConfigurationController s3FConfigurationController;
     final String id = "test_2908233490284ß902842390";
     final String service = "ka-upload";
@@ -23,11 +21,8 @@ public class S3FConfigurationControllerTest {
     @Before
     public void setUp() {
 	s3FConfigurationService = mock(S3FConfigurationService.class);
-	s3FConfigurationConstantService = mock(S3FConfigurationConstantService.class);
 	s3FConfigurationController = new S3FConfigurationController();
 	ReflectionTestUtils.setField(s3FConfigurationController, "s3FConfigurationService", s3FConfigurationService);
-	ReflectionTestUtils.setField(s3FConfigurationController, "s3FConfigurationConstantService",
-		s3FConfigurationConstantService);
     }
 
     @Test
