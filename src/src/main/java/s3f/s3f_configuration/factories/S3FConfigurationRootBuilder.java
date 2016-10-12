@@ -9,13 +9,13 @@ import java.util.stream.Collectors;
 import org.springframework.stereotype.Component;
 
 import s3f.s3f_configuration.dto.S3FConfigurationConstantDto;
-import s3f.s3f_configuration.dto.S3FConfigurationRootDto;
-import s3f.s3f_configuration.entities.S3FConfiguration;
+import s3f.s3f_configuration.dto.S3FConfigurationDto;
 
 @Component
-public class S3FConfigurationRootFactory {
+public class S3FConfigurationRootBuilder {
 
-    public S3FConfigurationRootDto build(List<S3FConfigurationConstantDto> s3FConfigurationConstantDtos, S3FConfiguration s3FConfiguration) {
+    public static S3FConfigurationDto build(List<S3FConfigurationConstantDto> s3FConfigurationConstantDtos,
+            S3FConfigurationDto s3FConfiguration) {
         Map<String, String> s3FConstantsMap = new HashMap<>();
         try {
             s3FConstantsMap = s3FConfigurationConstantDtos.stream()
@@ -25,7 +25,6 @@ public class S3FConfigurationRootFactory {
         } catch (Exception e) {
             throw e;
         }
-
 
         Map<String, String> mergedKeyValuePairs = new HashMap<>();
 
@@ -36,12 +35,13 @@ public class S3FConfigurationRootFactory {
                 mergedKeyValuePairs.put(keyAndValue.getKey(), keyAndValue.getValue());
             }
         }
-	return new S3FConfigurationRootDto(s3FConfiguration.getId(), mergedKeyValuePairs, s3FConfiguration.getVersion(),
-		s3FConfiguration.getLifecycle(), s3FConfiguration.getService());
+        return new S3FConfigurationDto(s3FConfiguration.getId(), mergedKeyValuePairs, s3FConfiguration.getVersion(),
+                s3FConfiguration.getLifecycle(), s3FConfiguration.getService());
     }
 
-    public List<S3FConfigurationRootDto> build(List<S3FConfigurationConstantDto> s3FConfigurationConstantDtos, List<S3FConfiguration> s3FConfigurations) {
-        List<S3FConfigurationRootDto> s3FConfigurationRootDtos = new ArrayList<>();
+    public static List<S3FConfigurationDto> build(List<S3FConfigurationConstantDto> s3FConfigurationConstantDtos,
+            List<S3FConfigurationDto> s3FConfigurations) {
+        List<S3FConfigurationDto> s3FConfigurationRootDtos = new ArrayList<>();
         Map<String, String> s3FConstantsMap = new HashMap<>();
         try {
             s3FConstantsMap = s3FConfigurationConstantDtos.stream()
@@ -53,7 +53,7 @@ public class S3FConfigurationRootFactory {
         }
 
         Map<String, String> mergedKeyValuePairs = new HashMap<>();
-        for (S3FConfiguration s3FConfiguration : s3FConfigurations) {
+        for (S3FConfigurationDto s3FConfiguration : s3FConfigurations) {
             for (Map.Entry<String, String> keyAndValue : s3FConfiguration.getKeyValuePairs().entrySet()) {
                 if (s3FConstantsMap.containsKey(keyAndValue.getValue())) {
                     mergedKeyValuePairs.put(keyAndValue.getKey(), s3FConstantsMap.get(keyAndValue.getValue()));
@@ -61,8 +61,8 @@ public class S3FConfigurationRootFactory {
                     mergedKeyValuePairs.put(keyAndValue.getKey(), keyAndValue.getValue());
                 }
             }
-	    s3FConfigurationRootDtos.add(new S3FConfigurationRootDto(s3FConfiguration.getId(), mergedKeyValuePairs,
-		    s3FConfiguration.getVersion(), s3FConfiguration.getLifecycle(), s3FConfiguration.getService()));
+            s3FConfigurationRootDtos.add(new S3FConfigurationDto(s3FConfiguration.getId(), mergedKeyValuePairs,
+                    s3FConfiguration.getVersion(), s3FConfiguration.getLifecycle(), s3FConfiguration.getService()));
         }
 
         return s3FConfigurationRootDtos;

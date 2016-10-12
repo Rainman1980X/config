@@ -10,6 +10,6 @@ import s3f.s3f_configuration.repositories.S3FConfigurationRepository;
  */
 public interface ConfigurationActions<T> {
     public ResponseEntity<?> doActionOnConfiguration(S3FConfigurationRepository configurationRepository,
-	    MongoTemplate mongoTemplate, String authorization, String correlationToken, T httpValues);
+            MongoTemplate mongoTemplate, String authorization, String correlationToken, T httpValues);
 
 }
