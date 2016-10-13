@@ -112,7 +112,7 @@ public class S3FConfigurationController {
         Map<String, String> httpsValues = new HashMap<>();
         httpsValues.put("version", version);
         httpsValues.put("lifecycle", lifecycle);
-        httpsValues.put("service", lifecycle);
+        httpsValues.put("service", service);
         return (new GetAllConfigurationAction()).doActionOnConfiguration(configurationRepository, mongoTemplate,
                 authorization, correlationToken, httpsValues);
     }
@@ -161,8 +161,8 @@ public class S3FConfigurationController {
                 configurationRepository, mongoTemplate, authorization, correlationToken, httpsValues);
     }
 
-    @RequestMapping(value = "/s3f-configuration/list/converter", method = RequestMethod.PUT)
-    @ApiOperation(value = "Get a configuration", produces = "application/json", consumes = "application/json", notes = "If a configuration will be deleted than the configuration will be deleted physically.")
+    @RequestMapping(value = "/s3f-configuration/list/converter", method = RequestMethod.POST)
+    @ApiOperation(value = "Convert a configuration from plain text to encrypt version ", produces = "application/json", consumes = "application/json", notes = "If a configuration will be deleted than the configuration will be deleted physically.")
     @ApiResponses(value = {
             @ApiResponse(code = HttpURLConnection.HTTP_OK, message = "Configuration successfully deleted", response = HttpStatus.class),
             @ApiResponse(code = HttpURLConnection.HTTP_NOT_FOUND, message = "Configuration not found.", response = HttpStatus.class),
