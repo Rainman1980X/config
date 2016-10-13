@@ -24,6 +24,7 @@ import io.swagger.annotations.ApiParam;
 import io.swagger.annotations.ApiResponse;
 import io.swagger.annotations.ApiResponses;
 import s3f.framework.logger.LoggerHelper;
+import s3f.s3f_configuration.action.configuration.ConvertData;
 import s3f.s3f_configuration.action.configuration.CreateConfigurationAction;
 import s3f.s3f_configuration.action.configuration.DeleteConfigurationAction;
 import s3f.s3f_configuration.action.configuration.EditConfigurationAction;
@@ -158,5 +159,20 @@ public class S3FConfigurationController {
 
         return (new GetCompiledConfigurationAction()).doActionOnConfiguration(configurationConstantRepository,
                 configurationRepository, mongoTemplate, authorization, correlationToken, httpsValues);
+    }
+
+    @RequestMapping(value = "/s3f-configuration/list/converter", method = RequestMethod.PUT)
+    @ApiOperation(value = "Get a configuration", produces = "application/json", consumes = "application/json", notes = "If a configuration will be deleted than the configuration will be deleted physically.")
+    @ApiResponses(value = {
+            @ApiResponse(code = HttpURLConnection.HTTP_OK, message = "Configuration successfully deleted", response = HttpStatus.class),
+            @ApiResponse(code = HttpURLConnection.HTTP_NOT_FOUND, message = "Configuration not found.", response = HttpStatus.class),
+            @ApiResponse(code = HttpURLConnection.HTTP_CONFLICT, message = "Configuration wrong combination ", response = HttpStatus.class),
+            @ApiResponse(code = HttpURLConnection.HTTP_INTERNAL_ERROR, message = "Configuration can't be found.", response = HttpStatus.class) })
+    public ResponseEntity<HttpStatus> convertAllConfiguration(
+            @RequestHeader(value = "Authorization") String authorization,
+            @RequestHeader(value = "CorrelationToken") String correlationToken) {
+
+        return (new ConvertData()).doActionOnConfiguration(configurationRepository, mongoTemplate,
+                authorization, correlationToken, "");
     }
 }
