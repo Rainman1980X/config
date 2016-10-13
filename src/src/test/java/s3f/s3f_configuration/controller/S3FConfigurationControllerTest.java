@@ -22,7 +22,7 @@ public class S3FConfigurationControllerTest {
     public void setUp() {
 	s3FConfigurationService = mock(S3FConfigurationService.class);
 	s3FConfigurationController = new S3FConfigurationController();
-	ReflectionTestUtils.setField(s3FConfigurationController, "s3FConfigurationService", s3FConfigurationService);
+	//ReflectionTestUtils.setField(s3FConfigurationController, "s3FConfigurationService", s3FConfigurationService);
     }
 
     @Test
