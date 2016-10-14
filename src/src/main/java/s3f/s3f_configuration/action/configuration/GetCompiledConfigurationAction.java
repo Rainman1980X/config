@@ -27,7 +27,6 @@ public class GetCompiledConfigurationAction {
         final ResponseEntity<List<S3FConfigurationConstantDto>> configurationConstants = (new GetAllConstantAction())
                 .doActionOnConstant(s3fConfigurationConstantRepository, mongoTemplate, authorization, correlationToken,
                         httpsValues);
-        configurationConstants.getStatusCode();
 
         final ResponseEntity<List<S3FConfigurationDto>> configurationDtos = (new GetAllConfigurationAction())
                 .doActionOnConfiguration(configurationRepository, mongoTemplate, authorization, correlationToken,
@@ -36,10 +35,13 @@ public class GetCompiledConfigurationAction {
             try {
                 List<S3FConfigurationDto> configurationDtosCompiled = S3FConfigurationRootBuilder
                         .build(configurationConstants.getBody(), configurationDtos.getBody());
-                return new ResponseEntity<>(configurationDtosCompiled, HttpStatus.INTERNAL_SERVER_ERROR);
+                return new ResponseEntity<>(configurationDtosCompiled, HttpStatus.OK);
             } catch (Exception e) {
                 return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
             }
+        }
+        if (!hasBody(configurationConstants.getStatusCode()) && hasBody(configurationDtos.getStatusCode())) {
+            return new ResponseEntity<>(configurationDtos.getBody(), HttpStatus.OK);
         }
         return new ResponseEntity<>(HttpStatus.CONFLICT);
     }
