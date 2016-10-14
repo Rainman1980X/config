@@ -16,9 +16,10 @@ import s3f.s3f_configuration.repositories.S3FConfigurationConstantRepository;
 import s3f.s3f_configuration.repositories.S3FConfigurationRepository;
 
 @Service
-public class GetCompiledConfigurationAction {
+public class GetCompiledConfigurationsAction {
 
-    public ResponseEntity<S3FConfigurationDto> doActionOnConfiguration(
+
+    public ResponseEntity<List<S3FConfigurationDto>> doActionOnConfiguration(
             S3FConfigurationConstantRepository s3fConfigurationConstantRepository,
             S3FConfigurationRepository configurationRepository, MongoTemplate mongoTemplate, String authorization,
             String correlationToken, Map<String, String> httpsValues) {
@@ -32,15 +33,15 @@ public class GetCompiledConfigurationAction {
                         httpsValues);
         if (hasBody(configurationConstants.getStatusCode()) && hasBody(configurationDtos.getStatusCode())) {
             try {
-                S3FConfigurationDto configurationDtosCompiled = S3FConfigurationRootBuilder
-                        .build(configurationConstants.getBody(), configurationDtos.getBody().get(0));
+                List<S3FConfigurationDto> configurationDtosCompiled = S3FConfigurationRootBuilder
+                        .build(configurationConstants.getBody(), configurationDtos.getBody());
                 return new ResponseEntity<>(configurationDtosCompiled, HttpStatus.OK);
             } catch (Exception e) {
                 return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
             }
         }
         if (!hasBody(configurationConstants.getStatusCode()) && hasBody(configurationDtos.getStatusCode())) {
-            return new ResponseEntity<>(configurationDtos.getBody().get(0), HttpStatus.OK);
+            return new ResponseEntity<>(configurationDtos.getBody(), HttpStatus.OK);
         }
         return new ResponseEntity<>(HttpStatus.CONFLICT);
     }

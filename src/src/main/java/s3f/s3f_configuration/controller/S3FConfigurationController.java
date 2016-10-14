@@ -139,7 +139,7 @@ public class S3FConfigurationController {
             @ApiResponse(code = HttpURLConnection.HTTP_OK, message = "Configuration successful compiled.", response = List.class),
             @ApiResponse(code = HttpURLConnection.HTTP_OK, message = "Configuration successful compiled.", response = HttpStatus.class),
             @ApiResponse(code = HttpURLConnection.HTTP_INTERNAL_ERROR, message = "Configuration can't be build.", response = HttpStatus.class) })
-    public ResponseEntity<List<S3FConfigurationDto>> getRoot(
+    public ResponseEntity<S3FConfigurationDto> getRoot(
             @RequestHeader(value = "Authorization") String authorization,
             @RequestHeader(value = "CorrelationToken") String correlationToken,
             @ApiParam(value = "The service parameter is sent from the gui. "
