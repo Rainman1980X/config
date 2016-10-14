@@ -1,5 +1,6 @@
 package s3f.s3f_configuration.controller;
 
+import java.net.HttpURLConnection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -16,6 +17,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
 import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiResponse;
 import io.swagger.annotations.ApiResponses;
@@ -25,10 +27,10 @@ import s3f.s3f_configuration.action.constants.EditConstantAction;
 import s3f.s3f_configuration.action.constants.GetAllConstantAction;
 import s3f.s3f_configuration.dto.S3FConfigurationConstantDto;
 import s3f.s3f_configuration.repositories.S3FConfigurationConstantRepository;
-import sun.net.www.protocol.http.HttpURLConnection;
 
 @RestController
-@Api(tags = "Shared Constants", value = "Shared Constants", description = "Simplify configuration")
+@Api(tags = "Shared Constants", description = "Simplify configuration")
+@ApiModel(value = "Configuration Constants", description = "The constants which can be used at all combination of version/lifecycle away all services.")
 public class S3FConfigurationConstantController {
 
     @Autowired
@@ -37,7 +39,7 @@ public class S3FConfigurationConstantController {
     private MongoTemplate mongoTemplate;
 
     @RequestMapping(value = "/api/v1/s3f-configuration/constant", method = RequestMethod.PUT)
-    @ApiOperation(value = "Create a new configurarion constant", produces = "application/json", consumes = "application/json")
+    @ApiOperation(value = "Create a new configurarion constant", produces = "application/json", consumes = "application/json", notes = "Create a new configuration as a raw configuration. Within the key value list the value part is encrypted stored to the database.")
     @ApiResponses(value = {
             @ApiResponse(code = HttpURLConnection.HTTP_OK, message = "Configuration constant successful created", response = S3FConfigurationConstantDto.class),
             @ApiResponse(code = HttpURLConnection.HTTP_CONFLICT, message = "Configuration constant has double entry", response = HttpStatus.class),

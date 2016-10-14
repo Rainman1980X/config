@@ -2,6 +2,9 @@ package s3f.s3f_configuration.dto;
 
 import org.springframework.data.annotation.Id;
 
+import io.swagger.annotations.ApiModel;
+
+@ApiModel(value = "Configuration Constants", description = "The constants which can be used at all combination of version/lifecycle away all services.")
 public class S3FConfigurationConstantDto {
 
     @Id
