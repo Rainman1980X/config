@@ -17,7 +17,6 @@ public class Application implements ApplicationConstants {
     public static final String version = "v1";
     public static String lifecycle;
     public final static String serviceName = "sintec.s3f.mi-config";
-    public final static boolean useConfigService = false;
 
     /**
      * lifecycle (i.a. -develop, -test, -stage, -production)
@@ -25,57 +24,51 @@ public class Application implements ApplicationConstants {
      * @see https://s3f.sintec.de/_layouts/15/start.aspx#/SitePages/Application-Lifecycle.aspx
      */
     public static void main(String[] args) {
-	Application.args = args;
-	new LifecycleUrlDictionary().check(args);
-	Application.lifecycle = new LifecycleUrlDictionary().getKey(args);
-	SpringApplication.run(Application.class, args);
+        Application.args = args;
+        new LifecycleUrlDictionary().check(args);
+        Application.lifecycle = new LifecycleUrlDictionary().getKey(args);
+        SpringApplication.run(Application.class, args);
     }
 
     @Bean
     public LifeCycle build() {
-	String result = "";
-	for (String arg : args) {
-	    if (arg.startsWith("--lifecycle")) {
-		result = arg.replaceFirst("--lifecycle", "");
-		result = result.substring(1, result.length());
-	    }
-	}
-	return new LifeCycle(result);
+        String result = "";
+        for (String arg : args) {
+            if (arg.startsWith("--lifecycle")) {
+                result = arg.replaceFirst("--lifecycle", "");
+                result = result.substring(1, result.length());
+            }
+        }
+        return new LifeCycle(result);
     }
 
     @Override
     public String getServiceName() {
-	return serviceName;
+        return serviceName;
     }
 
     @Override
     public String getVersion() {
-	return version;
+        return version;
     }
 
     @Override
     public String getLifecycle() {
-	return lifecycle;
+        return lifecycle;
     }
 
     @Override
     public URL getConfigServerAddress() {
-	return null;
+        return null;
     }
 
     @Override
     public String getConfigServiceAddress() {
-	return "";
+        return "";
     }
 
     @Override
     public Map<String, String> getConfigServiceArguments() {
-	return null;
-    }
-
-    @Override
-    public boolean isUsingConfigService() {
-	// TODO Auto-generated method stub
-	return useConfigService;
+        return null;
     }
 }
