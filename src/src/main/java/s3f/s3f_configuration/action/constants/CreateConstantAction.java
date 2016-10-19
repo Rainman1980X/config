@@ -17,7 +17,7 @@ import s3f.s3f_configuration.repositories.S3FConfigurationConstantRepository;
 @Service
 public class CreateConstantAction implements ConstantActions<S3FConfigurationConstantDto> {
 
-    private final String pattern = "$env_[a-zA-Z0-9][.a-zA-Z0-9]*";
+    //private final String pattern = "\\$env_[a-zA-Z0-9][.a-zA-Z0-9]*";
 
     private S3FConfigurationConstantRepository s3fConfigurationConstantRepository;
 
@@ -32,7 +32,7 @@ public class CreateConstantAction implements ConstantActions<S3FConfigurationCon
             if(!isValidName(s3fConfigurationConstantDto.getConstantName())){
                 LoggerHelper.logData(Level.WARN, "Constant name does not match pattern: $env_[a-zA-Z0-9][.a-zA-Z0-9]* ", correlationToken,
                         authorization, CreateConstantAction.class.getName());
-                return new ResponseEntity<>(HttpStatus.PRECONDITION_REQUIRED);
+                return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
             }
             if (hasDoubleEntry(s3fConfigurationConstantDto)) {
                 LoggerHelper.logData(Level.WARN, "Duplicate entry configuration constant", correlationToken,
@@ -68,6 +68,6 @@ public class CreateConstantAction implements ConstantActions<S3FConfigurationCon
     }
 
     private boolean isValidName(String constantName){
-        return Pattern.compile(pattern).matcher(constantName).matches();
+        return constantName.startsWith("$env_");
     }
 }
