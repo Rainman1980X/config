@@ -44,6 +44,7 @@ public class S3FConfigurationConstantController {
             @ApiResponse(code = HttpURLConnection.HTTP_OK, message = "Configuration constant successful created", response = S3FConfigurationConstantDto.class),
             @ApiResponse(code = HttpURLConnection.HTTP_CONFLICT, message = "Configuration constant has double entry", response = HttpStatus.class),
             @ApiResponse(code = HttpURLConnection.HTTP_INTERNAL_ERROR, message = "Configuration constant can't be saved.", response = HttpStatus.class) })
+            @ApiResponse(code = HttpURLConnection.HTTP_BAD_REQUEST, message = "Constant name does not match pattern $env_[a-zA-Z0-9][.a-zA-Z0-9]*", response = HttpStatus.class)
     public ResponseEntity<S3FConfigurationConstantDto> create(
             @RequestHeader(value = "Authorization") String authorization,
             @RequestHeader(value = "CorrelationToken") String correlationToken,
