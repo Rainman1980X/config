@@ -14,13 +14,10 @@ import s3f.s3f_configuration.repositories.S3FConfigurationRepository;
 @Service
 public class EditConfigurationAction implements ConfigurationActions<S3FConfigurationDto> {
 
-    private S3FConfigurationRepository configurationRepository;
-
     @Override
     public ResponseEntity<HttpStatus> doActionOnConfiguration(S3FConfigurationRepository configurationRepository,
             MongoTemplate mongoTemplate, String authorization, String correlationToken,
             S3FConfigurationDto s3FConfigurationDto) {
-        this.configurationRepository = configurationRepository;
         try {
             S3FConfigurationDto s3FConfigurationDtoUpdate = configurationRepository
                     .findById(s3FConfigurationDto.getId());
@@ -33,12 +30,12 @@ public class EditConfigurationAction implements ConfigurationActions<S3FConfigur
                         s3FConfigurationDto.getService());
                 configurationRepository.save(s3FConfigurationUpdate);
                 LoggerHelper.logData(Level.INFO, "Update configuration", correlationToken, authorization,
-                        CreateConfigurationAction.class.getName());
+                        EditConfigurationAction.class.getName());
                 return new ResponseEntity<HttpStatus>(HttpStatus.OK);
             }
         } catch (Exception e) {
-            LoggerHelper.logData(Level.ERROR, "Create configuration fails", correlationToken, authorization,
-                    CreateConfigurationAction.class.getName(), e);
+            LoggerHelper.logData(Level.ERROR, "Edit configuration fails", correlationToken, authorization,
+                    EditConfigurationAction.class.getName(), e);
             return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
