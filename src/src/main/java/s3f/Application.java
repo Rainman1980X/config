@@ -1,6 +1,8 @@
 package s3f;
 
 import java.net.URL;
+import java.util.HashMap;
+import java.util.Map;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
@@ -66,5 +68,13 @@ public class Application implements ApplicationConstants {
         return "";
     }
 
+    @Override
+    public Map<String, String> getConfigServiceArguments() {
+        Map<String, String> retMap = new HashMap<>();
+        retMap.put("serviceName", getServiceName());
+        retMap.put("lifecycle", getLifecycle());
+        retMap.put("version", getVersion());
+        return retMap;
+    }
 
 }
