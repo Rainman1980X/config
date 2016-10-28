@@ -1,5 +1,7 @@
 package s3f.s3f_configuration.action.configuration;
 
+import java.util.Map;
+
 import org.apache.log4j.Level;
 import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.http.HttpStatus;
@@ -11,16 +13,19 @@ import s3f.s3f_configuration.controller.S3FConfigurationController;
 import s3f.s3f_configuration.dto.S3FConfigurationDto;
 import s3f.s3f_configuration.repositories.S3FConfigurationRepository;
 
-public class DeleteConfigurationAction implements ConfigurationActions<String> {
+public class DeleteConfigurationAction {
 
-    @Override
     public ResponseEntity<HttpStatus> doActionOnConfiguration(S3FConfigurationRepository configurationRepository,
-            MongoTemplate mongoTemplate, String authorization, String correlationToken, String configurationId) {
+            MongoTemplate mongoTemplate, String authorization, String correlationToken,
+            Map<String, String> httpsValues) {
         try {
-            S3FConfigurationDto s3FConfigurationtDto = configurationRepository.findById(configurationId);
+            S3FConfigurationDto s3FConfigurationtDto = configurationRepository.findOneByServiceAndVersionAndLifecycle(
+                    httpsValues.get("service"), httpsValues.get("version"), httpsValues.get("lifecycle"));
             if (s3FConfigurationtDto == null) {
-                LoggerHelper.logData(Level.WARN, "Configuration not found", correlationToken, authorization,
-                        DeleteConfigurationAction.class.getName());
+                LoggerHelper.logData(Level.WARN,
+                        "Configuration not found service :" + httpsValues.get("service") + " version:"
+                                + httpsValues.get("version") + " lifecycle:" + httpsValues.get("lifecycle"),
+                        correlationToken, authorization, DeleteConfigurationAction.class.getName());
                 return new ResponseEntity<>(HttpStatus.NOT_FOUND);
             }
             configurationRepository.delete(s3FConfigurationtDto);

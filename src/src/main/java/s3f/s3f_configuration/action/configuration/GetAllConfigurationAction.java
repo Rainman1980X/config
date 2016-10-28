@@ -46,7 +46,7 @@ public class GetAllConfigurationAction implements ConfigurationActions<Map<Strin
             if (configurationDtos.isEmpty()) {
                 LoggerHelper.logData(Level.WARN, "No configuration constants found.", correlationToken, authorization,
                         GetAllConstantAction.class.getName());
-                return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+                return new ResponseEntity<>(HttpStatus.NOT_FOUND);
             }
 
             List<S3FConfigurationDto> s3FConfigurationConstantDtosEncrypt = new ArrayList<>();

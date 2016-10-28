@@ -82,7 +82,7 @@ public class S3FConfigurationController {
                 authorization, correlationToken, s3FConfigurationDto);
     }
 
-    @RequestMapping(value = "/s3f-configuration/{configurationId}", method = RequestMethod.DELETE)
+    @RequestMapping(value = "/s3f-configuration/{service}/{version}/{lifecycle}", method = RequestMethod.DELETE)
     @ApiOperation(value = "Delete a configuration", produces = "application/json", consumes = "application/json", notes = "If a configuration will be deleted than the configuration will be deleted physically.")
     @ApiResponses(value = {
             @ApiResponse(code = HttpURLConnection.HTTP_OK, message = "Configuration successfully deleted", response = HttpStatus.class),
@@ -91,9 +91,14 @@ public class S3FConfigurationController {
     public ResponseEntity<HttpStatus> deleteConfiguration(@RequestHeader(value = "Authorization") String authorization,
             @RequestHeader(value = "CorrelationToken") String correlationToken,
             @ApiParam(value = "The service parameter is sent from the gui. "
-                    + "The service is needed to identify the data record.", required = true) @PathVariable String configurationId) {
+                    + "The service is needed to identify the data record.", required = true) @PathVariable String service,
+            @PathVariable String version, @PathVariable String lifecycle) {
+        Map<String, String> httpsValues = new HashMap<>();
+        httpsValues.put("version", version);
+        httpsValues.put("lifecycle", lifecycle);
+        httpsValues.put("service", service);
         return (new DeleteConfigurationAction()).doActionOnConfiguration(configurationRepository, mongoTemplate,
-                authorization, correlationToken, configurationId);
+                authorization, correlationToken, httpsValues);
     }
 
     @RequestMapping(value = "/s3f-configuration/list/{service}/{version}/{lifecycle}", method = RequestMethod.GET)
@@ -107,8 +112,8 @@ public class S3FConfigurationController {
             @RequestHeader(value = "Authorization") String authorization,
             @RequestHeader(value = "CorrelationToken") String correlationToken,
             @ApiParam(value = "The service parameter is sent from the gui. "
-                    + "The service is needed to identify the data record.", required = true) @PathVariable String version,
-            @PathVariable String lifecycle, @PathVariable String service) {
+                    + "The service is needed to identify the data record.", required = true) @PathVariable String service,
+            @PathVariable String version, @PathVariable String lifecycle) {
         Map<String, String> httpsValues = new HashMap<>();
         httpsValues.put("version", version);
         httpsValues.put("lifecycle", lifecycle);
@@ -139,8 +144,7 @@ public class S3FConfigurationController {
             @ApiResponse(code = HttpURLConnection.HTTP_OK, message = "Configuration successful compiled.", response = List.class),
             @ApiResponse(code = HttpURLConnection.HTTP_OK, message = "Configuration successful compiled.", response = HttpStatus.class),
             @ApiResponse(code = HttpURLConnection.HTTP_INTERNAL_ERROR, message = "Configuration can't be build.", response = HttpStatus.class) })
-    public ResponseEntity<S3FConfigurationDto> getRoot(
-            @RequestHeader(value = "Authorization") String authorization,
+    public ResponseEntity<S3FConfigurationDto> getRoot(@RequestHeader(value = "Authorization") String authorization,
             @RequestHeader(value = "CorrelationToken") String correlationToken,
             @ApiParam(value = "The service parameter is sent from the gui. "
                     + "The service is needed to identify the data record.", required = true) @PathVariable String service,
@@ -172,7 +176,7 @@ public class S3FConfigurationController {
             @RequestHeader(value = "Authorization") String authorization,
             @RequestHeader(value = "CorrelationToken") String correlationToken) {
 
-        return (new ConvertData()).doActionOnConfiguration(configurationRepository, mongoTemplate,
-                authorization, correlationToken, "");
+        return (new ConvertData()).doActionOnConfiguration(configurationRepository, mongoTemplate, authorization,
+                correlationToken, "");
     }
 }
