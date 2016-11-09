@@ -8,7 +8,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 
 import s3f.framework.logger.LoggerHelper;
-import s3f.framework.security.EncryptionDecryptionService;
+import s3f.framework.encryption.EncryptionDecryptionService;
 import s3f.s3f_configuration.dto.S3FConfigurationDto;
 import s3f.s3f_configuration.repositories.S3FConfigurationRepository;
 

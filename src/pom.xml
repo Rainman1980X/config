@@ -10,72 +10,73 @@
     <name>sintec.s3f.mi-config</name>
     <url>http://www.sintec.de</url>
 
-    <parent>
-        <groupId>org.springframework.boot</groupId>
-        <artifactId>spring-boot-starter-parent</artifactId>
-        <version>1.4.0.RELEASE</version>
-    </parent>
-
     <dependencies>
-
         <dependency>
-            <groupId>org.springframework.boot</groupId>
-            <artifactId>spring-boot-starter</artifactId>
+            <groupId>sintec.s3f</groupId>
+            <artifactId>base</artifactId>
+            <version>[1.0.0,2.0.0)</version>
             <exclusions>
                 <exclusion>
-                    <groupId>org.springframework.boot</groupId>
-                    <artifactId>spring-boot-starter-logging</artifactId>
+                    <groupId>sintec.s3f.component</groupId>
+                    <artifactId>configuration</artifactId>
                 </exclusion>
             </exclusions>
         </dependency>
         <dependency>
-            <groupId>org.springframework.boot</groupId>
-            <artifactId>spring-boot-starter-web</artifactId>
+            <groupId>sintec.s3f.component</groupId>
+            <artifactId>gsonSerializer</artifactId>
+            <version>[1.0.0,2.0.0)</version>
         </dependency>
-
         <dependency>
-            <groupId>org.springframework.boot</groupId>
-            <artifactId>spring-boot-starter-data-mongodb</artifactId>
+            <groupId>sintec.s3f.component</groupId>
+            <artifactId>logging</artifactId>
+            <version>[1.0.0,2.0.0)</version>
         </dependency>
-
         <dependency>
-            <groupId>org.springframework.boot</groupId>
-            <artifactId>spring-boot-starter-actuator</artifactId>
+            <groupId>sintec.s3f.component</groupId>
+            <artifactId>authorization.jwt</artifactId>
+            <version>[1.0.0,2.0.0)</version>
         </dependency>
-
+        <dependency>
+            <groupId>sintec.s3f.component</groupId>
+            <artifactId>collections</artifactId>
+            <version>[1.0.0,2.0.0)</version>
+        </dependency>
+        <dependency>
+            <groupId>sintec.s3f.component</groupId>
+            <artifactId>MongoConfig</artifactId>
+            <version>[1.0.0,2.0.0)</version>
+        </dependency>
+        <dependency>
+            <groupId>sintec.s3f.component</groupId>
+            <artifactId>encryption</artifactId>
+            <version>[1.0.0,2.0.0)</version>
+        </dependency>
+        <dependency>
+            <groupId>sintec.s3f.component</groupId>
+            <artifactId>security</artifactId>
+            <version>[1.0.0,2.0.0)</version>
+        </dependency>
+        <dependency>
+            <groupId>sintec.s3f.component</groupId>
+            <artifactId>swagger</artifactId>
+            <version>[1.0.0,2.0.0)</version>
+        </dependency>
+        <dependency>
+            <groupId>commons-logging</groupId>
+            <artifactId>commons-logging</artifactId>
+            <version>1.2</version>
+        </dependency>
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-test</artifactId>
             <scope>test</scope>
-        </dependency>
-
-        <dependency>
-            <groupId>io.springfox</groupId>
-            <artifactId>springfox-swagger2</artifactId>
-            <version>2.5.0</version>
-        </dependency>
-
-        <dependency>
-            <groupId>io.springfox</groupId>
-            <artifactId>springfox-swagger-ui</artifactId>
-            <version>2.5.0</version>
-        </dependency>
-
-        <dependency>
-            <groupId>com.rabbitmq</groupId>
-            <artifactId>amqp-client</artifactId>
-            <version>3.6.5</version>
+            <version>1.4.0.RELEASE</version>
         </dependency>
         <dependency>
             <groupId>commons-lang</groupId>
             <artifactId>commons-lang</artifactId>
             <version>2.3</version>
-        </dependency>
-
-        <dependency>
-            <groupId>sintec.s3f</groupId>
-            <artifactId>shared-lib</artifactId>
-            <version>1.3.92</version>
         </dependency>
     </dependencies>
 
@@ -83,6 +84,8 @@
         <start-class>s3f.Application</start-class>
         <java.version>1.8</java.version>
         <swagger-version>1.5.5</swagger-version>
+        <maven.compiler.source>1.8</maven.compiler.source>
+        <maven.compiler.target>1.8</maven.compiler.target>
     </properties>
 
 

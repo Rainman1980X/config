@@ -11,7 +11,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 import s3f.framework.logger.LoggerHelper;
-import s3f.framework.security.EncryptionDecryptionService;
+import s3f.framework.encryption.EncryptionDecryptionService;
 import s3f.s3f_configuration.dto.S3FConfigurationConstantDto;
 import s3f.s3f_configuration.repositories.S3FConfigurationConstantRepository;
 
