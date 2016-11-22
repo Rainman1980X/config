@@ -9,22 +9,14 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestHeader;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiResponse;
 import io.swagger.annotations.ApiResponses;
-import s3f.s3f_configuration.action.constants.CreateConstantAction;
-import s3f.s3f_configuration.action.constants.DeleteConstantAction;
-import s3f.s3f_configuration.action.constants.EditConstantAction;
-import s3f.s3f_configuration.action.constants.GetAllConstantAction;
+import s3f.s3f_configuration.action.constants.*;
 import s3f.s3f_configuration.dto.S3FConfigurationConstantDto;
 import s3f.s3f_configuration.repositories.S3FConfigurationConstantRepository;
 
@@ -139,5 +131,23 @@ public class S3FConfigurationConstantController {
 
         return (new DeleteConstantAction()).doActionOnConstant(s3fConfigurationConstantRepository, mongoTemplate,
                 authorization, correlationToken, httpsValues);
+    }
+
+    @RequestMapping(value = "/api/v1/s3f-configuration/constant/", method = RequestMethod.POST)
+    public ResponseEntity<?> copyConstant(@RequestHeader(value = "Authorization") String authorization,
+                                                   @RequestHeader(value = "CorrelationToken") String correlationToken,
+                                                   @RequestParam(value = "ConstantName") String constantName,
+                                                   @RequestParam(value = "LifecycleToCopyFrom") String sourceLifecycle,
+                                                   @RequestHeader(value = "LifecycleToCopyTo") String targetLifecycle,
+                                                   @RequestHeader(value = "SourceVersion") String sourceVersion,
+                                                   @RequestHeader(value = "TargetVersion") String targetVersion){
+
+        Map<String, String> httpsValues = new HashMap<>();
+        httpsValues.put("ConstantName", constantName);
+        httpsValues.put("LifecycleToCopyFrom", sourceLifecycle);
+        httpsValues.put("LifecycleToCopyTo", targetLifecycle);
+        httpsValues.put("SourceVersion", sourceVersion);
+        httpsValues.put("TargetVersion", targetVersion);
+        return new CopyConstantAction().doActionOnConstant(s3fConfigurationConstantRepository,mongoTemplate,authorization,correlationToken,httpsValues);
     }
 }

@@ -10,13 +10,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.CrossOrigin;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestHeader;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
@@ -24,12 +18,7 @@ import io.swagger.annotations.ApiParam;
 import io.swagger.annotations.ApiResponse;
 import io.swagger.annotations.ApiResponses;
 import s3f.framework.logger.LoggerHelper;
-import s3f.s3f_configuration.action.configuration.ConvertData;
-import s3f.s3f_configuration.action.configuration.CreateConfigurationAction;
-import s3f.s3f_configuration.action.configuration.DeleteConfigurationAction;
-import s3f.s3f_configuration.action.configuration.EditConfigurationAction;
-import s3f.s3f_configuration.action.configuration.GetAllConfigurationAction;
-import s3f.s3f_configuration.action.configuration.GetCompiledConfigurationAction;
+import s3f.s3f_configuration.action.configuration.*;
 import s3f.s3f_configuration.dto.S3FConfigurationDto;
 import s3f.s3f_configuration.repositories.S3FConfigurationConstantRepository;
 import s3f.s3f_configuration.repositories.S3FConfigurationRepository;
@@ -178,5 +167,22 @@ public class S3FConfigurationController {
 
         return (new ConvertData()).doActionOnConfiguration(configurationRepository, mongoTemplate, authorization,
                 correlationToken, "");
+    }
+
+    @RequestMapping(value = "/s3f-configuration/copyConfiguration", method = RequestMethod.POST)
+    public ResponseEntity<?> copyConfigurationTo(@RequestHeader(value = "Authorization") String authorization,
+                                                                   @RequestHeader(value = "CorrelationToken") String correlationToken,
+                                                                   @RequestParam(value = "ServiceName") String serviceName,
+                                                                   @RequestParam(value = "LifecycleToCopyFrom") String sourceLifecycle,
+                                                                   @RequestHeader(value = "LifecycleToCopyTo") String targetLifecycle,
+                                                                   @RequestHeader(value = "SourceVersion") String sourceVersion,
+                                                                   @RequestHeader(value = "TargetVersion") String targetVersion){
+        Map<String,String> httpValues = new HashMap<>();
+        httpValues.put("LifecycleToCopyFrom",sourceLifecycle);
+        httpValues.put("LifecycleToCopyTo",targetLifecycle);
+        httpValues.put("SourceVersion",sourceVersion);
+        httpValues.put("TargetVersion",targetVersion);
+        httpValues.put("ServiceName",serviceName);
+        return new CopyConfigurationAction().doActionOnConfiguration(configurationRepository,mongoTemplate,authorization,correlationToken,httpValues);
     }
 }

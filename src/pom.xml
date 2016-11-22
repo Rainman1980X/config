@@ -52,7 +52,7 @@
         <dependency>
             <groupId>sintec.s3f.component</groupId>
             <artifactId>MongoConfig</artifactId>
-            <version>[1.0.0,2.0.0)</version>
+            <version>test</version>
         </dependency>
         <dependency>
             <groupId>sintec.s3f.component</groupId>
