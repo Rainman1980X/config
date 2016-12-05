@@ -49,7 +49,7 @@ public class GetAllConstantAction implements ConstantActions<Map<String, String>
 
             List<S3FConfigurationConstantDto> s3FConfigurationConstantDtosEncrypt = new ArrayList<>();
             for (S3FConfigurationConstantDto temp : s3FConfigurationConstantDtos) {
-                s3FConfigurationConstantDtosEncrypt.add(encryptConstantDto(temp));
+                s3FConfigurationConstantDtosEncrypt.add(decryptConstantDto(temp));
             }
 
             LoggerHelper.logData(Level.INFO, "Configuration Constant successful returned.", correlationToken,
@@ -66,9 +66,9 @@ public class GetAllConstantAction implements ConstantActions<Map<String, String>
         return httpValues.containsKey("version") && httpValues.containsKey("lifecycle");
     }
 
-    private S3FConfigurationConstantDto encryptConstantDto(S3FConfigurationConstantDto decryptValue) {
-        String constantValuePlain = EncryptionDecryptionService.decrypt(decryptValue.getConstantValue());
-        return new S3FConfigurationConstantDto(decryptValue.getId(), decryptValue.getVersion(),
-                decryptValue.getLifecycle(), decryptValue.getConstantName(), constantValuePlain);
+    private S3FConfigurationConstantDto decryptConstantDto(S3FConfigurationConstantDto encryptValue) {
+        String constantValuePlain = EncryptionDecryptionService.decrypt(encryptValue.getConstantValue());
+        return new S3FConfigurationConstantDto(encryptValue.getId(), encryptValue.getVersion(),
+                encryptValue.getLifecycle(), encryptValue.getConstantName(), constantValuePlain);
     }
 }

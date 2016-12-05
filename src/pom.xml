@@ -19,7 +19,7 @@
 
     <dependencies>
         <dependency>
-            <groupId>sintec.s3f</groupId>
+            <groupId>sintec.s3f.component</groupId>
             <artifactId>base</artifactId>
             <version>[1.0.0,2.0.0)</version>
             <exclusions>
@@ -51,8 +51,8 @@
         </dependency>
         <dependency>
             <groupId>sintec.s3f.component</groupId>
-            <artifactId>MongoConfig</artifactId>
-            <version>test</version>
+            <artifactId>mongo-config</artifactId>
+            <version>[1.0.0,2.0.0]</version>
         </dependency>
         <dependency>
             <groupId>sintec.s3f.component</groupId>
