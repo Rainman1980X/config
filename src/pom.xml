@@ -21,7 +21,7 @@
         <dependency>
             <groupId>sintec.s3f.component</groupId>
             <artifactId>base</artifactId>
-            <version>[1.0.0,2.0.0)</version>
+            <version>[2.0.0,3.0.0)</version>
             <exclusions>
                 <exclusion>
                     <groupId>sintec.s3f.component</groupId>
