@@ -1,22 +1,18 @@
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
-
-    <groupId>sintec</groupId>
-    <artifactId>sintec.s3f.mi-config</artifactId>
+    <groupId>sintec.s3f.microservice</groupId>
+    <artifactId>mi-config</artifactId>
     <version>1.0</version>
     <packaging>jar</packaging>
-
-    <name>sintec.s3f.mi-config</name>
+    <name>mi-config</name>
     <url>http://www.sintec.de</url>
-
     <parent>
         <groupId>org.springframework.boot</groupId>
         <artifactId>spring-boot-starter-parent</artifactId>
         <version>1.4.0.RELEASE</version>
     </parent>
-
-
     <dependencies>
         <dependency>
             <groupId>sintec.s3f.component</groupId>
@@ -105,6 +101,40 @@
                     <target>1.8</target>
                 </configuration>
             </plugin>
-            </plugins>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-deploy-plugin</artifactId>
+                <!-- DISABLE ALL VERSIONS OF THIS PLUGIN -->
+                <!-- <version>2.8.2</version>-->
+                <configuration>
+                    <skip>true</skip>
+                </configuration>
+            </plugin>
+            <plugin>
+                <groupId>org.sonatype.plugins</groupId>
+                <artifactId>nexus-staging-maven-plugin</artifactId>
+                <version>1.5.1</version>
+                <executions>
+                    <execution>
+                        <id>default-deploy</id>
+                        <phase>deploy</phase>
+                        <goals>
+                            <goal>deploy</goal>
+                        </goals>
+                    </execution>
+                </executions>
+                <configuration>
+                    <serverId>nexus</serverId>
+                    <nexusUrl>https://repository.sintec.de/nexus/</nexusUrl>
+                    <skipStaging>true</skipStaging>
+                </configuration>
+            </plugin>
+        </plugins>
     </build>
+    <distributionManagement>
+        <repository>
+            <id>microservices-develop</id>
+            <url>https://repository.sintec.de/nexus/repository/maven-datev-ka-microservices-develop/</url>
+        </repository>
+    </distributionManagement>
 </project>

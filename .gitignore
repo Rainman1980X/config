@@ -1,13 +1,4 @@
-.DS_Store
-.idea
+application.properties
+sintec.s3f.mi-config.iml
 target
-s3f-configuration.iml
-*.log
-/src/*.iml
-/src/*.project
-/src/*.classpath
-/*.userlibraries
-/src/*.eml
-/*.project
-/src/.settings/*.prefs
-/src/.settings/*.xml
+.idea
